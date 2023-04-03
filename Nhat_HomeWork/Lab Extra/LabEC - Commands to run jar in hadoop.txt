@@ -1,0 +1,6 @@
+1. hadoop fs -rm -r input
+2. hadoop fs -rm -r output
+3. hadoop fs -mkdir input
+4. hadoop fs -put /home/cloudera/Desktop/Question-LabEC-NCDC-Weather_small.txt input
+5. hadoop jar /home/cloudera/Desktop/LabEC.jar StationTempRecord input output
+6. hadoop fs -get output /home/cloudera/Desktop/

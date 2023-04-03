@@ -1,0 +1,58 @@
+Spark Motivation
+ Back in 2008, people started to see shortcomings of MR.
+ MapReduce couldn’t do interactive queries and it couldn’t
+handle advanced algorithms, such as machine learning.
+ As big data analytics evolved beyond simple batch jobs,
+there was a need for both more
+Apache Spark
+ Fast and general purpose engine for large scale
+distributed data processing
+ Provides a framework that supports in-memory cluster
+computing
+ Well suited for graph and machine learning algorithms
+(iterative computation) and interactive data mining.
+ Rich set of APIs in Java, Scala, Python and R for performing
+many common data processing tasks, such as joins.
+ Spark also comes with a REPL (read-eval-print-loop) for both
+Scala and Python, which makes it quick and easy to explore
+datasets. (Spark shell)
+ Spark uses MapReduce idea but not implementation. It has its
+own distributed runtime for executing work on a cluster.
+© 2019 Maharishi University of Management * all rights reserved 3
+ MapReduce is really a programming model in which multiple
+MapReduce jobs can be strung together to create a data
+pipeline.
+ In between every stage of that pipeline, the MR code would
+read data from the disk, and when completed, would write
+the data back to the disk.
+ This process was inefficient because it had to read all the data
+from disk at the beginning of each stage of the process. This
+is where Spark comes in to play.
+ Taking the same MR programming model, Spark was able to
+get an immediate 10x increase in performance, because it
+didn’t have to store the data back to the disk, and all
+activities stayed in memory.
+© 2019 Maharishi University of Management * all rights reserved 4
+MapReduce vs. Spark
+MapReduce vs. Spa
+Spark Modules
+© 2019 Maharishi University of Management * all rights reserved 6
+ Spark consists of several purpose-built components - Spark Core,
+Spark SQL, Spark Streaming, Spark GraphX, and Spark Mllib.
+ These components make Spark a feature-packed unifying platform:
+it can be used for many tasks that previously had to be
+accomplished with several different frameworks.
+Executing Spark Applications
+ There are two different ways you can interact with Spark.
+ Static compiled programs
+ Write a program in Scala, Java, or Python that uses Spark’s library
+- that is, its API.
+ Submit the job using “spark submit” utility
+ REPL Shell - Scala shell, Python shell (pyspark),
+Notebooks
+ Read – Eval – Print – Loop
+ REPL offers an interactive console that can be used for
+experimentation and idea testing.
+ There’s no need for compilation and deployment just to find out
+something isn’t working.
+ REPL can even be used for launching jobs on the full set of data.

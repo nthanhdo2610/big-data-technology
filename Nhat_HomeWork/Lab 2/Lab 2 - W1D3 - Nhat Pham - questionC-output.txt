@@ -1,0 +1,2 @@
+Hadoop	80
+Java	80

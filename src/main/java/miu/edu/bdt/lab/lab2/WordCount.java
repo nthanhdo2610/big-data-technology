@@ -18,36 +18,29 @@ import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 
-public class WordCount extends Configured implements Tool
-{
+public class WordCount extends Configured implements Tool {
 
-    public static class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable>
-    {
+    public static class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
         private final static IntWritable one = new IntWritable(1);
         private final Text word = new Text();
 
         @Override
-        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
-        {
-            for (String token : value.toString().split("\\s+"))
-            {
+        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            for (String token : value.toString().split("\\s+")) {
                 word.set(token);
                 context.write(word, one);
             }
         }
     }
 
-    public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable>
-    {
+    public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         private final IntWritable result = new IntWritable();
 
         @Override
-        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException
-        {
+        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
-            for (IntWritable val : values)
-            {
+            for (IntWritable val : values) {
                 sum += val.get();
             }
             result.set(sum);
@@ -55,8 +48,7 @@ public class WordCount extends Configured implements Tool
         }
     }
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
 
         int res = ToolRunner.run(conf, new WordCount(), args);
@@ -65,8 +57,7 @@ public class WordCount extends Configured implements Tool
     }
 
     @Override
-    public int run(String[] args) throws Exception
-    {
+    public int run(String[] args) throws Exception {
 
         Job job = new Job(getConf(), "WordCount");
         job.setJarByClass(WordCount.class);

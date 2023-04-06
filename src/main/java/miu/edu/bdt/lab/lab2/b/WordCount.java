@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab2.a;
+package miu.edu.bdt.lab.lab2.b;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -33,6 +33,7 @@ public class WordCount extends Configured implements Tool {
                 context.write(word, one);
             }
         }
+
     }
 
     public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
@@ -51,20 +52,16 @@ public class WordCount extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-
-        // Do some research and find out what code needs to be added to the Word Count
-        // program for automatic removal of “output” directory before job execution.
         FileSystem fs = FileSystem.get(conf);
         fs.delete(new Path(args[1]), true);
-
         int res = ToolRunner.run(conf, new WordCount(), args);
-        System.out.println("ToolRunner successfully!");
+        System.out.println("WordCount finished!");
         System.exit(res);
     }
 
     @Override
     public int run(String[] args) throws Exception {
-
+        System.out.println("WordCount running!!!");
         Job job = new Job(getConf(), "WordCount");
         job.setJarByClass(WordCount.class);
 
@@ -76,6 +73,12 @@ public class WordCount extends Configured implements Tool {
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
+
+        // Run the above basic Word Count program in pseudo distributed mode with 2 reducers.
+        // Use setNumReduceTask method of Job object. Paste the screenshot of the two partr-* files created in HDFS.
+        // (Note: multiple reducers work in pseudo-distributed mode
+        // and not local mode)
+        job.setNumReduceTasks(2);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

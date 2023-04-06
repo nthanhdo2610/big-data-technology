@@ -1,0 +1,1 @@
+hadoop jar big-data-technology-1.0-SNAPSHOT.jar input output

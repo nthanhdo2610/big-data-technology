@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab2.a;
+package miu.edu.bdt.lab.lab2.d;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -45,26 +45,26 @@ public class WordCount extends Configured implements Tool {
                 sum += val.get();
             }
             result.set(sum);
-            context.write(key, result);
+            // Modify the WordCount program to output the counts of only those words which appear
+            // in the document at least 25 times.
+            if(sum>=25) {
+                context.write(key, result);
+            }
         }
     }
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-
-        // Do some research and find out what code needs to be added to the Word Count
-        // program for automatic removal of “output” directory before job execution.
         FileSystem fs = FileSystem.get(conf);
         fs.delete(new Path(args[1]), true);
-
         int res = ToolRunner.run(conf, new WordCount(), args);
-        System.out.println("ToolRunner successfully!");
+        System.out.println("WordCount finished!");
         System.exit(res);
     }
 
     @Override
     public int run(String[] args) throws Exception {
-
+        System.out.println("WordCount running!!!");
         Job job = new Job(getConf(), "WordCount");
         job.setJarByClass(WordCount.class);
 

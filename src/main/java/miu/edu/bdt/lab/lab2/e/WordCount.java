@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab2.a;
+package miu.edu.bdt.lab.lab2.e;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -18,6 +18,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WordCount extends Configured implements Tool {
 
@@ -37,34 +39,38 @@ public class WordCount extends Configured implements Tool {
 
     public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         private final IntWritable result = new IntWritable();
+        private final Set<String> set = new HashSet<>();
+
+        @Override
+        protected void setup(Reducer<Text, IntWritable, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+            super.setup(context);
+        }
 
         @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int sum = 0;
-            for (IntWritable val : values) {
-                sum += val.get();
-            }
-            result.set(sum);
-            context.write(key, result);
+            set.add(key.toString());
+        }
+
+        @Override
+        protected void cleanup(Reducer<Text, IntWritable, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+            result.set(set.size());
+            context.write(new Text("result"), result);
+            super.cleanup(context);
         }
     }
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-
-        // Do some research and find out what code needs to be added to the Word Count
-        // program for automatic removal of “output” directory before job execution.
         FileSystem fs = FileSystem.get(conf);
         fs.delete(new Path(args[1]), true);
-
         int res = ToolRunner.run(conf, new WordCount(), args);
-        System.out.println("ToolRunner successfully!");
+        System.out.println("WordCount finished!");
         System.exit(res);
     }
 
     @Override
     public int run(String[] args) throws Exception {
-
+        System.out.println("WordCount running!!!");
         Job job = new Job(getConf(), "WordCount");
         job.setJarByClass(WordCount.class);
 

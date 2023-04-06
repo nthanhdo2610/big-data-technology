@@ -1,1 +1,1 @@
-Main-Class: miu.edu.bdt.BigDataTechnologyApplication
+Main-Class: miu.edu.bdt.lab.lab2.WordCount

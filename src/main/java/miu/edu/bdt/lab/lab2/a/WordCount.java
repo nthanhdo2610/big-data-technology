@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab2;
+package miu.edu.bdt.lab.lab2.a;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -51,16 +51,19 @@ public class WordCount extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+
+        // Using class FileSystem to delete output before execute ToolRunner
         FileSystem fs = FileSystem.get(conf);
         fs.delete(new Path(args[1]), true);
+
         int res = ToolRunner.run(conf, new WordCount(), args);
-        System.out.println("WordCount finished!");
+        System.out.println("ToolRunner successfully!");
         System.exit(res);
     }
 
     @Override
     public int run(String[] args) throws Exception {
-        System.out.println("WordCount running!!!");
+
         Job job = new Job(getConf(), "WordCount");
         job.setJarByClass(WordCount.class);
 

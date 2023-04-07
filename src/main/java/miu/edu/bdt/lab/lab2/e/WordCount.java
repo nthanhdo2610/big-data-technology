@@ -35,6 +35,16 @@ public class WordCount extends Configured implements Tool {
                 context.write(word, one);
             }
         }
+
+        @Override
+        protected void setup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+            super.setup(context);
+        }
+
+        @Override
+        protected void cleanup(Mapper<LongWritable, Text, Text, IntWritable>.Context context) throws IOException, InterruptedException {
+            super.cleanup(context);
+        }
     }
 
     public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {

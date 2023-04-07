@@ -61,9 +61,6 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
-                            <mainClass>
-                                miu.edu.bdt.lab.lab2.WordCount
-                            </mainClass>
                         </manifest>
                     </archive>
                 </configuration>

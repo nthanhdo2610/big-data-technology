@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab3;
+package miu.edu.bdt.lab.lab3.prob4;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -15,7 +15,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -27,6 +26,9 @@ import java.util.Map;
 
 public class NCDCWeather extends Configured implements Tool {
 
+    // Modify the above program by writing your own sorting routine
+    // so that the output file will show the latest year first.
+    // (Years should be in descending order)
     public static class NCDCWeatherMapper extends Mapper<LongWritable, Text, YearWritable, FloatIntPairWritable> {
 
         private Map<String, List<Float>> map = new HashMap<>();
@@ -64,17 +66,6 @@ public class NCDCWeather extends Configured implements Tool {
                 context.write(new YearWritable(Integer.parseInt(key)), new FloatIntPairWritable(sum, count));
             }
             super.cleanup(context);
-        }
-    }
-
-    // Now, we need to use 2 reducers. So, create a Custom Partitioner class
-    // which will send all the years less than 1930 to Reducer 1 and rest of the years to Reducer 2.
-    //(Remember, partitioner will not work in local mode of your VM!)
-    public static class CustomPartitioner extends HashPartitioner<YearWritable, FloatIntPairWritable> {
-
-        @Override
-        public int getPartition(YearWritable key, FloatIntPairWritable value, int numReduceTasks) {
-            return key.getYear() < 1930 ? 0 : 1;
         }
     }
 
@@ -121,9 +112,6 @@ public class NCDCWeather extends Configured implements Tool {
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
-
-        job.setPartitionerClass(CustomPartitioner.class);
-        job.setNumReduceTasks(2);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

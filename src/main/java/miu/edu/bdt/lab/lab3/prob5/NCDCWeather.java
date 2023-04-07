@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab3;
+package miu.edu.bdt.lab.lab3.prob5;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;

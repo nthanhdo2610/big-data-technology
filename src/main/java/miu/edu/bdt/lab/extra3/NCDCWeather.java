@@ -10,8 +10,10 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -52,6 +54,14 @@ public class NCDCWeather extends Configured implements Tool {
         }
     }
 
+    public static class CustomFileOutputFormat extends TextOutputFormat<Text, IntWritable> {
+        @Override
+        public Path getDefaultWorkFile(TaskAttemptContext context, String extension) throws IOException {
+            FileOutputCommitter committer = (FileOutputCommitter) this.getOutputCommitter(context);
+            return new Path(committer.getWorkPath(), getUniqueFile(context, "part", extension).replace("part-r-00000", "StationTempRecord"));
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(conf);
@@ -66,7 +76,6 @@ public class NCDCWeather extends Configured implements Tool {
         System.out.println("NCDC Weather Average running!!!");
         Job job = new Job(getConf(), "NCDCWeather");
         job.setJarByClass(NCDCWeather.class);
-        job.getConfiguration().set("mapreduce.output.basename", "StationTempRecord");
 
         job.setMapperClass(NCDCWeatherMapper.class);
         job.setMapOutputKeyClass(StationTempWritable.class);
@@ -77,7 +86,7 @@ public class NCDCWeather extends Configured implements Tool {
         job.setOutputValueClass(IntWritable.class);
 
         job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+        job.setOutputFormatClass(CustomFileOutputFormat.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

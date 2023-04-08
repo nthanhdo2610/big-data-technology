@@ -1,7 +1,5 @@
 package miu.edu.bdt.lab.lab4.WordCount;
 
-import java.io.IOException;
-
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.mapred.AvroKey;
@@ -22,61 +20,55 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class WordCountTotalAvro extends Configured implements Tool
-{
+import java.io.IOException;
 
-	public static class AvroWordCountMapper extends Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Integer>>
-	{
-		AvroKey<String> avroKey = new AvroKey<String>();
-		AvroValue<Integer> avroValue = new AvroValue<Integer>(1);
+public class WordCountTotalAvro extends Configured implements Tool {
 
-		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
-		{
-			for (String token: value.toString().split("\\s+")) {
+    public static class AvroWordCountMapper extends Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Integer>> {
+        AvroKey<String> avroKey = new AvroKey<>();
+        AvroValue<Integer> avroValue = new AvroValue<>(1);
 
-				avroKey.datum(token);
-				context.write(avroKey, avroValue);
-			}
-		}
-	}
+        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            for (String token : value.toString().split("\\s+")) {
 
-	public static class AvroWordCountReducer extends Reducer<AvroKey<String>, AvroValue<Integer>, AvroKey<String>, AvroValue<Integer>>
-	{
-		AvroValue<Integer> avroValue = new AvroValue<Integer>();
+                avroKey.datum(token);
+                context.write(avroKey, avroValue);
+            }
+        }
+    }
 
-		public void reduce(AvroKey<String> key, Iterable<AvroValue<Integer>> values, Context context) throws IOException, InterruptedException
-		{
-			int sum = 0;
-			for (AvroValue<Integer> value : values)
-			{
-				// __________Write code to update sum
-			}
+    public static class AvroWordCountReducer extends Reducer<AvroKey<String>, AvroValue<Integer>, AvroKey<String>, AvroValue<Integer>> {
+        AvroValue<Integer> avroValue = new AvroValue<>();
 
-			avroValue.datum(sum);
-			context.write(key, avroValue);
-		}
-	}
+        public void reduce(AvroKey<String> key, Iterable<AvroValue<Integer>> values, Context context) throws IOException, InterruptedException {
+            int sum = 0;
+            for (AvroValue<Integer> value : values) {
+                // __________Write code to update sum
+            }
 
-	public int run(String[] args) throws Exception
-	{
-		if (args.length != 2)
-		{
-			System.err.println("Usage: WordCountTotalAvro <input path> <output path>");
-			return -1;
-		}
+            avroValue.datum(sum);
+            context.write(key, avroValue);
+        }
+    }
 
-		Job job = Job.getInstance();
-		job.setJarByClass(WordCountTotalAvro.class);
-		job.setJobName("WordCountTotalAvro");
+    public int run(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.err.println("Usage: WordCountTotalAvro <input path> <output path>");
+            return -1;
+        }
 
-		FileInputFormat.setInputPaths(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        Job job = Job.getInstance();
+        job.setJarByClass(WordCountTotalAvro.class);
+        job.setJobName("WordCountTotalAvro");
 
-		job.setMapperClass(AvroWordCountMapper.class);
-		job.setReducerClass(AvroWordCountReducer.class);
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-		//Need to set the ouput format class as follows:
-		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
+        job.setMapperClass(AvroWordCountMapper.class);
+        job.setReducerClass(AvroWordCountReducer.class);
+
+        //Need to set the ouput format class as follows:
+        job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
 
 		/* Need to set mapper output key and value schema
 		 So, write code to set those here:
@@ -84,18 +76,17 @@ public class WordCountTotalAvro extends Configured implements Tool
 		 */
 
 
-		// Need to set reducer output key and value schema as well as shown in below 2 lines
-		AvroJob.setOutputKeySchema(job, Schema.create(Type.STRING));
-		AvroJob.setOutputValueSchema(job, Schema.create(Type.INT));
+        // Need to set reducer output key and value schema as well as shown in below 2 lines
+        AvroJob.setOutputKeySchema(job, Schema.create(Type.STRING));
+        AvroJob.setOutputValueSchema(job, Schema.create(Type.INT));
 
-		return job.waitForCompletion(true) ? 0 : 1;
-	}
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
 
-	public static void main(String[] args) throws Exception
-	{
-		Configuration conf = new Configuration();
-		FileSystem.get(conf).delete(new Path(args[1]), true);
-		int res = ToolRunner.run(new Configuration(), new WordCountTotalAvro(), args);
-		System.exit(res);
-	}
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        FileSystem.get(conf).delete(new Path(args[1]), true);
+        int res = ToolRunner.run(new Configuration(), new WordCountTotalAvro(), args);
+        System.exit(res);
+    }
 }

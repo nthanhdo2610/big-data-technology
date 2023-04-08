@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab4.WordCount;
+package miu.edu.bdt.lab.lab4.q1;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;

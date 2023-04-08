@@ -1,15 +1,15 @@
-package miu.edu.bdt.lab.lab4.WordCount;
+package miu.edu.bdt.lab.lab4.q1.a;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapreduce.AvroJob;
+import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -25,46 +25,47 @@ import java.io.IOException;
 
 public class WordCountAvroOutput extends Configured implements Tool {
 
-    public static class AvroWordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+    public static class AvroWordCountMapper extends Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Integer>> {
+        AvroKey<String> avroKey = new AvroKey<>();
+        AvroValue<Integer> avroValue = new AvroValue<>(1);
+//        Text word = new Text();
 
-        private final static IntWritable one = new IntWritable(1);
-        private Text word = new Text();
-
+        @Override
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             for (String token : value.toString().split("\\s+")) {
 
-                word.set(token);
+//                word.set(token);
 
                 // _______Write mapper output here (context.write)
+                avroKey.datum(token);
+                context.write(avroKey, avroValue);
             }
         }
     }
 
-    public static class AvroWordCountReducer extends Reducer<Text, IntWritable, AvroKey<Text>, AvroValue<Integer>> {
-        AvroKey<Text> avroKey = new AvroKey<>();
+    public static class AvroWordCountReducer extends Reducer<AvroKey<String>, AvroValue<Integer>, AvroKey<String>, AvroValue<Integer>> {
         AvroValue<Integer> avroValue = new AvroValue<>();
 
-        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+        public void reduce(AvroKey<String> key, Iterable<AvroValue<Integer>> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
-            for (IntWritable value : values) {
-                sum += value.get();
+            for (AvroValue<Integer> value : values) {
+                sum += value.datum();
             }
 
             // _______Populate the avroKey and avroValue objects here
-
-            context.write(avroKey, avroValue);
+            avroValue.datum(sum);
+            context.write(key, avroValue);
         }
     }
 
     public int run(String[] args) throws Exception {
         if (args.length != 2) {
-            System.err.println("Usage: WordCountAvroOptput <input path> <output path>");
+            System.err.println("Usage: WordCountAvroOutput <input path> <output path>");
             return -1;
         }
 
-        Job job = Job.getInstance();
+        Job job = Job.getInstance(getConf(), "WordCountAvroOutput");
         job.setJarByClass(WordCountAvroOutput.class);
-        job.setJobName("WordCountAvroOptput");
 
         FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -72,20 +73,14 @@ public class WordCountAvroOutput extends Configured implements Tool {
         job.setMapperClass(AvroWordCountMapper.class);
         job.setReducerClass(AvroWordCountReducer.class);
 
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
+        AvroJob.setMapOutputKeySchema(job, Schema.create(Type.STRING));
+        AvroJob.setMapOutputValueSchema(job, Schema.create(Type.INT));
 
         job.setInputFormatClass(TextInputFormat.class);    // This is default format; this line could've been very well omitted!
+        job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
 
         AvroJob.setOutputKeySchema(job, Schema.create(Type.STRING));
-
-		/* Comment or uncomment the following lines? Decide wisely! ;-)
-
-		AvroJob.setOutputValueSchema(job, Schema.create(Type.INT));
-
-		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
-
-		*/
+        AvroJob.setOutputValueSchema(job, Schema.create(Type.INT));
 
         return job.waitForCompletion(true) ? 0 : 1;
     }

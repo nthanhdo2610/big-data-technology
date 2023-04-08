@@ -1,3 +1,5 @@
+package miu.edu.bdt.lab.lab4.WordCount;
+
 import java.io.IOException;
 
 import org.apache.avro.Schema;
@@ -5,7 +7,6 @@ import org.apache.avro.Schema.Type;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapreduce.AvroJob;
-import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -22,7 +23,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class WordCountAvroOptput extends Configured implements Tool
+public class WordCountAvroOutput extends Configured implements Tool
 {
 
 	public static class AvroWordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable>
@@ -34,9 +35,9 @@ public class WordCountAvroOptput extends Configured implements Tool
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 		{
 			for (String token: value.toString().split("\\s+")) {
-				
+
 				word.set(token);
-				
+
 				// _______Write mapper output here (context.write)
 			}
 		}
@@ -54,7 +55,7 @@ public class WordCountAvroOptput extends Configured implements Tool
 			{
 				sum += value.get();
 			}
-			
+
 			// _______Populate the avroKey and avroValue objects here
 
 			context.write(avroKey, avroValue);
@@ -70,30 +71,30 @@ public class WordCountAvroOptput extends Configured implements Tool
 		}
 
 		Job job = Job.getInstance();
-		job.setJarByClass(WordCountAvroOptput.class);
+		job.setJarByClass(WordCountAvroOutput.class);
 		job.setJobName("WordCountAvroOptput");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
-		
+
 		job.setMapperClass(AvroWordCountMapper.class);
 		job.setReducerClass(AvroWordCountReducer.class);
-		
+
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(IntWritable.class);
-		
+
 		job.setInputFormatClass(TextInputFormat.class);	// This is default format; this line could've been very well omitted!
-		
+
 		AvroJob.setOutputKeySchema(job, Schema.create(Type.STRING));
-		
+
 		/* Comment or uncomment the following lines? Decide wisely! ;-)
-		
-		AvroJob.setOutputValueSchema(job, Schema.create(Type.INT));		
-		
+
+		AvroJob.setOutputValueSchema(job, Schema.create(Type.INT));
+
 		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
-		
+
 		*/
-		
+
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
 
@@ -101,7 +102,7 @@ public class WordCountAvroOptput extends Configured implements Tool
 	{
 		Configuration conf = new Configuration();
 		FileSystem.get(conf).delete(new Path(args[1]), true);
-		int res = ToolRunner.run(conf, new WordCountAvroOptput(), args);		
+		int res = ToolRunner.run(conf, new WordCountAvroOutput(), args);
 		System.exit(res);
 	}
 }

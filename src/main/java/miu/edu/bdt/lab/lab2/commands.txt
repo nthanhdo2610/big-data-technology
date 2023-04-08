@@ -1,0 +1,80 @@
+edgar.nguyen@Do-Nguyens-MacBook-Pro big-data-technology % docker cp ./target/big-data-technology-1.0-SNAPSHOT.jar 6d2:/home/cloudera/
+edgar.nguyen@Do-Nguyens-MacBook-Pro big-data-technology % docker ps
+CONTAINER ID   IMAGE                      COMMAND                  CREATED      STATUS        PORTS                                                                                                                                                                                                                                                                     NAMES
+6d209b0250e3   qduong/cloudera-java8:v1   "/usr/bin/docker-qui…"   4 days ago   Up 17 hours   22/tcp, 2181/tcp, 3306/tcp, 4040/tcp, 0.0.0.0:80->80/tcp, 7077/tcp, 8020/tcp, 8042/tcp, 0.0.0.0:7180->7180/tcp, 8088/tcp, 8983/tcp, 9090/tcp, 11000/tcp, 16000/tcp, 18080/tcp, 19888/tcp, 50030/tcp, 50070/tcp, 50075/tcp, 60010/tcp, 60030/tcp, 0.0.0.0:8888->8888/tcp   quickstart.cloudera-java8
+edgar.nguyen@Do-Nguyens-MacBook-Pro big-data-technology % docker exec -it 6d2 bash
+[root@quickstart /]# su - cloudera
+[cloudera@quickstart ~]$ ls
+big-data-technology-1.0-SNAPSHOT.jar  cloudera-manager  cm_api.py  Desktop  Documents  enterprise-deployment.json  express-deployment.json  kerberos  lib  parcels  workspace
+[cloudera@quickstart ~]$  hadoop jar big-data-technology-1.0-SNAPSHOT.jar input output
+WordCount running!!!
+23/04/08 19:40:54 INFO client.RMProxy: Connecting to ResourceManager at quickstart.cloudera/172.17.0.2:8032
+23/04/08 19:40:54 INFO input.FileInputFormat: Total input paths to process : 1
+23/04/08 19:40:54 INFO mapreduce.JobSubmitter: number of splits:1
+23/04/08 19:40:55 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1680923415634_0006
+23/04/08 19:40:55 INFO impl.YarnClientImpl: Submitted application application_1680923415634_0006
+23/04/08 19:40:55 INFO mapreduce.Job: The url to track the job: http://quickstart.cloudera:8088/proxy/application_1680923415634_0006/
+23/04/08 19:40:55 INFO mapreduce.Job: Running job: job_1680923415634_0006
+23/04/08 19:41:00 INFO mapreduce.Job: Job job_1680923415634_0006 running in uber mode : false
+23/04/08 19:41:00 INFO mapreduce.Job:  map 0% reduce 0%
+23/04/08 19:41:05 INFO mapreduce.Job:  map 100% reduce 0%
+23/04/08 19:41:09 INFO mapreduce.Job:  map 100% reduce 100%
+23/04/08 19:41:10 INFO mapreduce.Job: Job job_1680923415634_0006 completed successfully
+23/04/08 19:41:10 INFO mapreduce.Job: Counters: 49
+        File System Counters
+                FILE: Number of bytes read=5410
+                FILE: Number of bytes written=246019
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=22172
+                HDFS: Number of bytes written=3147
+                HDFS: Number of read operations=6
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=2
+        Job Counters
+                Launched map tasks=1
+                Launched reduce tasks=1
+                Data-local map tasks=1
+                Total time spent by all maps in occupied slots (ms)=282112
+                Total time spent by all reduces in occupied slots (ms)=238080
+                Total time spent by all map tasks (ms)=2204
+                Total time spent by all reduce tasks (ms)=1860
+                Total vcore-seconds taken by all map tasks=2204
+                Total vcore-seconds taken by all reduce tasks=1860
+                Total megabyte-seconds taken by all map tasks=282112
+                Total megabyte-seconds taken by all reduce tasks=238080
+        Map-Reduce Framework
+                Map input records=169
+                Map output records=3819
+                Map output bytes=37315
+                Map output materialized bytes=5406
+                Input split bytes=134
+                Combine input records=0
+                Combine output records=0
+                Reduce input groups=336
+                Reduce shuffle bytes=5406
+                Reduce input records=3819
+                Reduce output records=336
+                Spilled Records=7638
+                Shuffled Maps =1
+                Failed Shuffles=0
+                Merged Map outputs=1
+                GC time elapsed (ms)=119
+                CPU time spent (ms)=1550
+                Physical memory (bytes) snapshot=259080192
+                Virtual memory (bytes) snapshot=3908321280
+                Total committed heap usage (bytes)=81264640
+        Shuffle Errors
+                BAD_ID=0
+                CONNECTION=0
+                IO_ERROR=0
+                WRONG_LENGTH=0
+                WRONG_MAP=0
+                WRONG_REDUCE=0
+        File Input Format Counters
+                Bytes Read=22038
+        File Output Format Counters
+                Bytes Written=3147
+WordCount finished!
+[cloudera@quickstart ~]$

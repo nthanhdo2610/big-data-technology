@@ -1,3 +1,5 @@
+package miu.edu.bdt.lab.lab4.AvroStationTempYear;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,7 +27,7 @@ public class NcdcLineReaderUtils {
 		observationDateString = record.substring(15, 27);
 		year = record.substring(15, 19);
 		airTemperatureMalformed = false;
-		
+
 		// Remove leading plus sign as parseInt doesn't like it
 		if (record.charAt(87) == '+') {
 			airTemperatureString = record.substring(88, 92);

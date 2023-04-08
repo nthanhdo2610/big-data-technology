@@ -61,7 +61,7 @@ public class WordCount extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         System.out.println("WordCount running!!!");
-        Job job = new Job(getConf(), "WordCount");
+        Job job = Job.getInstance(getConf(), "WordCount");
         job.setJarByClass(WordCount.class);
 
         job.setMapperClass(WordCountMapper.class);

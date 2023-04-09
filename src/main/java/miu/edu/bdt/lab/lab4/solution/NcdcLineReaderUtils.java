@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab4.AvroStationTempYear;
+package miu.edu.bdt.lab.lab4.solution;
 
 import java.text.DateFormat;
 import java.text.ParseException;

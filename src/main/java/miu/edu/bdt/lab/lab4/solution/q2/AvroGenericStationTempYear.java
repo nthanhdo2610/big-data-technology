@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab4.solution;
+package miu.edu.bdt.lab.lab4.solution.q2;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;

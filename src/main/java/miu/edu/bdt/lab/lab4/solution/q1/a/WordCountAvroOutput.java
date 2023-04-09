@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab4.q1.a;
+package miu.edu.bdt.lab.lab4.solution.q1.a;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
@@ -32,7 +32,6 @@ public class WordCountAvroOutput extends Configured implements Tool {
         @Override
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             for (String token : value.toString().split("\\s+")) {
-                // _______Write mapper output here (context.write)
                 avroKey.datum(token);
                 context.write(avroKey, avroValue);
             }
@@ -48,7 +47,6 @@ public class WordCountAvroOutput extends Configured implements Tool {
                 sum += value.datum();
             }
 
-            // _______Populate the avroKey and avroValue objects here
             avroValue.datum(sum);
             context.write(key, avroValue);
         }

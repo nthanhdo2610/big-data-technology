@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab4.q1.b;
+package miu.edu.bdt.lab.lab4.solution.q1.b;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
@@ -25,19 +25,15 @@ import java.io.IOException;
 public class WordCountTotalAvro extends Configured implements Tool {
 
     public static class AvroWordCountMapper extends Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Integer>> {
-        AvroKey<String> avroKey = new AvroKey<>("Total");
-        AvroValue<Integer> avroValue = new AvroValue<>();
-        int total = 0;
-
-        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            total += value.toString().split("\\s+").length;
-        }
+        AvroKey<String> avroKey = new AvroKey<>();
+        AvroValue<Integer> avroValue = new AvroValue<>(1);
 
         @Override
-        protected void cleanup(Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Integer>>.Context context) throws IOException, InterruptedException {
-            avroValue.datum(total);
-            context.write(avroKey, avroValue);
-            super.cleanup(context);
+        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            for (String token : value.toString().split("\\s+")) {
+                avroKey.datum(token);
+                context.write(avroKey, avroValue);
+            }
         }
     }
 
@@ -47,7 +43,6 @@ public class WordCountTotalAvro extends Configured implements Tool {
         public void reduce(AvroKey<String> key, Iterable<AvroValue<Integer>> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
             for (AvroValue<Integer> value : values) {
-                // __________Write code to update sum
                 sum += value.datum();
             }
 

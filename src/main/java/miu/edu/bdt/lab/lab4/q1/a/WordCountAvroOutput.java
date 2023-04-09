@@ -28,14 +28,10 @@ public class WordCountAvroOutput extends Configured implements Tool {
     public static class AvroWordCountMapper extends Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Integer>> {
         AvroKey<String> avroKey = new AvroKey<>();
         AvroValue<Integer> avroValue = new AvroValue<>(1);
-//        Text word = new Text();
 
         @Override
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             for (String token : value.toString().split("\\s+")) {
-
-//                word.set(token);
-
                 // _______Write mapper output here (context.write)
                 avroKey.datum(token);
                 context.write(avroKey, avroValue);

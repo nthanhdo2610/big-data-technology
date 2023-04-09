@@ -1,4 +1,4 @@
-package miu.edu.bdt.lab.lab4.q1;
+package miu.edu.bdt.lab.lab4.q1.b;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;

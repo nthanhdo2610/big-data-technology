@@ -4,17 +4,19 @@
   "doc": "A weather reading.",
   "fields": [
     {
-      "name": "stationId",
-      "type": "string"
+      "name": "year",
+      "type": "int",
+      "order": "descending"
     },
     {
       "name": "temperature",
       "type": "float",
-      "order": "descending"
+      "order": "ignore"
     },
     {
-      "name": "year",
-      "type": "string"
+      "name": "stationId",
+      "type": "string",
+      "order": "ignore"
     }
   ]
 }

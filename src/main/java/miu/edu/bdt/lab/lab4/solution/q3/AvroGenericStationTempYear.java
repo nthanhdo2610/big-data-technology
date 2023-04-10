@@ -1,6 +1,5 @@
-package miu.edu.bdt.lab.lab4.solution.q2;
+package miu.edu.bdt.lab.lab4.solution.q3;
 
-import miu.edu.bdt.lab.lab4.solution.NcdcLineReaderUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -25,6 +24,8 @@ import org.apache.hadoop.util.ToolRunner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AvroGenericStationTempYear extends Configured implements Tool {
 
@@ -32,7 +33,7 @@ public class AvroGenericStationTempYear extends Configured implements Tool {
     private static final String DEFAULT_RESOURCES_SCHEMA_FILE_NAME = "schema/weather.avsc";
 
     public static class AvroMapper extends Mapper<LongWritable, Text, AvroKey<GenericRecord>, NullWritable> {
-        private final miu.edu.bdt.lab.lab4.solution.NcdcLineReaderUtils utils = new NcdcLineReaderUtils();
+        private final NcdcLineReaderUtils utils = new NcdcLineReaderUtils();
         private final Schema DEFAULT_RESOURCES_SCHEMA = new Schema.Parser().parse(getClass().getClassLoader().getResourceAsStream(DEFAULT_RESOURCES_SCHEMA_FILE_NAME));
         private final GenericRecord record = new GenericData.Record(SCHEMA != null ? SCHEMA : DEFAULT_RESOURCES_SCHEMA);
         private final AvroKey<GenericRecord> avroKey = new AvroKey<>();
@@ -47,7 +48,7 @@ public class AvroGenericStationTempYear extends Configured implements Tool {
             if (utils.isValidTemperature()) {
                 record.put("stationId", utils.getStationId());
                 record.put("temperature", utils.getAirTemperature());
-                record.put("year", utils.getYear());
+                record.put("year", Integer.parseInt(utils.getYear()));
                 avroKey.datum(record);
                 context.write(avroKey, NullWritable.get());
             }
@@ -55,10 +56,57 @@ public class AvroGenericStationTempYear extends Configured implements Tool {
     }
 
     public static class AvroReducer extends Reducer<AvroKey<GenericRecord>, NullWritable, AvroKey<GenericRecord>, NullWritable> {
+
+        private final Schema DEFAULT_RESOURCES_SCHEMA = new Schema.Parser().parse(getClass().getClassLoader().getResourceAsStream(DEFAULT_RESOURCES_SCHEMA_FILE_NAME));
+        private final GenericRecord record = new GenericData.Record(SCHEMA != null ? SCHEMA : DEFAULT_RESOURCES_SCHEMA);
+        private final AvroKey<GenericRecord> avroKey = new AvroKey<>();
+
+        private static int yearOffset = 0;
+        private static float maxTemp = 0.0f;
+        private static List<String> stations = new ArrayList<>();
+
+        public AvroReducer() throws IOException {
+        }
+
         @Override
         protected void reduce(AvroKey<GenericRecord> key, Iterable<NullWritable> values, Context context) throws IOException, InterruptedException {
 //			System.out.println(key.datum());
-            context.write(key, NullWritable.get());
+            GenericRecord data = key.datum();
+            int year = (int) data.get("year");
+            float temp = (float) data.get("temperature");
+            String stationId = (String) data.get("stationId");
+
+            if (year != yearOffset) {
+                if (yearOffset > 0) {
+                    record.put("year", yearOffset);
+                    record.put("temperature", maxTemp);
+                    record.put("stationId", stations.toString());
+                    avroKey.datum(record);
+                    context.write(avroKey, NullWritable.get());
+                }
+                yearOffset = year;
+                maxTemp = temp;
+                stations = new ArrayList<>();
+                stations.add(stationId);
+            } else {
+                maxTemp = Math.max(temp, maxTemp);
+                if (!stations.contains(stationId)) {
+                    stations.add(stationId);
+                }
+            }
+
+        }
+
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+            if (yearOffset > 0) {
+                record.put("year", yearOffset);
+                record.put("temperature", maxTemp);
+                record.put("stationId", stations.toString());
+                avroKey.datum(record);
+                context.write(avroKey, NullWritable.get());
+            }
+            super.cleanup(context);
         }
     }
 
@@ -73,7 +121,7 @@ public class AvroGenericStationTempYear extends Configured implements Tool {
         }
 
         Job job = Job.getInstance();
-        job.setJarByClass(miu.edu.bdt.lab.lab4.solution.AvroGenericStationTempYear.class);
+        job.setJarByClass(AvroGenericStationTempYear.class);
         job.setJobName("Avro Station-Temp-Year");
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
@@ -86,8 +134,8 @@ public class AvroGenericStationTempYear extends Configured implements Tool {
         }
         System.out.println("SCHEMA: " + SCHEMA);
 
-        job.setMapperClass(miu.edu.bdt.lab.lab4.solution.AvroGenericStationTempYear.AvroMapper.class);
-        job.setReducerClass(miu.edu.bdt.lab.lab4.solution.AvroGenericStationTempYear.AvroReducer.class);
+        job.setMapperClass(AvroMapper.class);
+        job.setReducerClass(AvroReducer.class);
 
         AvroJob.setMapOutputKeySchema(job, SCHEMA);
 //		AvroJob.setMapOutputKeySchema(job, Schema.create(Schema.Type.NULL));
@@ -105,7 +153,7 @@ public class AvroGenericStationTempYear extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         FileSystem.get(conf).delete(new Path(args[1]), true);
-        int res = ToolRunner.run(conf, new miu.edu.bdt.lab.lab4.solution.AvroGenericStationTempYear(), args);
+        int res = ToolRunner.run(conf, new AvroGenericStationTempYear(), args);
         System.out.println("Avro Station-Temp-Year is done!!!!!");
         System.exit(res);
     }

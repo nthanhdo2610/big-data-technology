@@ -38,5 +38,12 @@
             <version>1.7.7</version>
             <classifier>hadoop2</classifier>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.pig</groupId>
+            <artifactId>piggybank</artifactId>
+            <version>0.17.0</version>
+        </dependency>
+
     </dependencies>
 </project>

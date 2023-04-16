@@ -43,9 +43,11 @@ public class HiveConnectionTests {
         System.out.println("test1=====");
         Connection con = null;
         try {
-            String conStr = "jdbc:hive2://172.17.0.2:10000/default";
+//            String conStr = "jdbc:hive2://localhost:8022/default";
+//            String conStr = "jdbc:hive2://127.0.0.1:10000/default";
+            String conStr = "jdbc:hive2:localhost:10000/default";
             Class.forName("org.apache.hive.jdbc.HiveDriver");
-            con = DriverManager.getConnection(conStr, "cloudera", "cloudera");
+            con = DriverManager.getConnection(conStr, "", "");
             Statement stmt = con.createStatement();
 //            stmt.executeQuery("CREATE DATABASE emp");
             System.out.println("Database emp created successfully.");

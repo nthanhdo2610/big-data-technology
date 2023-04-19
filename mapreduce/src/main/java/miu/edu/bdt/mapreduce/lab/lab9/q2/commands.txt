@@ -1,0 +1,61 @@
+Use the following commands to count:
+
+val fileLicence = sc.textFile("hdfs://quickstart.cloudera:8020/user/spark/input/LICENSE")
+val notEmpty = fileLicence.filter(_.length()!=0)
+val optimized = notEmpty.filter(!_.startsWith("==="))
+val indexed = optimized.zipWithIndex
+val beginBsdRow = indexed.filter(_._1.startsWith("BSD-style"))
+val endBsdRow = indexed.filter(_._1.startsWith("MIT licenses"))
+val numLibs = endBsdRow.first()._2 - beginBsdRow.first()._2 - 6
+
+Result:
+
+[root@quickstart /]# spark-shell
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/lib/zookeeper/lib/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/jars/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel).
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 1.6.0
+      /_/
+
+Using Scala version 2.10.5 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_181)
+Type in expressions to have them evaluated.
+Type :help for more information.
+23/04/19 05:15:19 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Spark context available as sc (master = local[*], app id = local-1681881320228).
+23/04/19 05:15:21 WARN DataNucleus.General: Plugin (Bundle) "org.datanucleus.store.rdbms" is already registered. Ensure you dont have multiple JAR versions of the same plugin in the classpath. The URL "file:/usr/lib/hive/lib/datanucleus-rdbms-3.2.9.jar" is already registered, and you are trying to register an identical plugin located at URL "file:/usr/jars/datanucleus-rdbms-3.2.9.jar."
+23/04/19 05:15:21 WARN DataNucleus.General: Plugin (Bundle) "org.datanucleus" is already registered. Ensure you dont have multiple JAR versions of the same plugin in the classpath. The URL "file:/usr/jars/datanucleus-core-3.2.10.jar" is already registered, and you are trying to register an identical plugin located at URL "file:/usr/lib/hive/lib/datanucleus-core-3.2.10.jar."
+23/04/19 05:15:26 WARN metastore.ObjectStore: Version information not found in metastore. hive.metastore.schema.verification is not enabled so recording the schema version 1.1.0
+23/04/19 05:15:26 WARN metastore.ObjectStore: Failed to get database default, returning NoSuchObjectException
+23/04/19 05:15:27 WARN shortcircuit.DomainSocketFactory: The short-circuit local reads feature cannot be used because libhadoop cannot be loaded.
+SQL context available as sqlContext.
+
+scala> val fileLicence = sc.textFile("hdfs://quickstart.cloudera:8020/user/spark/input/LICENSE")
+fileLicence: org.apache.spark.rdd.RDD[String] = hdfs://quickstart.cloudera:8020/user/spark/input/LICENSE MapPartitionsRDD[8] at textFile at <console>:27
+
+scala> val notEmpty = fileLicence.filter(_.length()!=0)
+notEmpty: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[9] at filter at <console>:29
+
+scala> val optimized = notEmpty.filter(!_.startsWith("==="))
+optimized: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[10] at filter at <console>:31
+
+scala> val indexed = optimized.zipWithIndex
+indexed: org.apache.spark.rdd.RDD[(String, Long)] = ZippedWithIndexRDD[11] at zipWithIndex at <console>:33
+
+scala> val beginBsdRow = indexed.filter(_._1.startsWith("BSD-style"))
+beginBsdRow: org.apache.spark.rdd.RDD[(String, Long)] = MapPartitionsRDD[12] at filter at <console>:35
+
+scala> val endBsdRow = indexed.filter(_._1.startsWith("MIT licenses"))
+endBsdRow: org.apache.spark.rdd.RDD[(String, Long)] = MapPartitionsRDD[13] at filter at <console>:35
+
+scala> val numLibs = endBsdRow.first()._2 - beginBsdRow.first()._2 - 6
+numLibs: Long = 32
+
+scala>

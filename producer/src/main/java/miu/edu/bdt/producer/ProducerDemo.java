@@ -13,8 +13,8 @@ public class ProducerDemo {
     private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class);
 
     public static void main(String[] args) {
-        log.info("I am a Kafka Producer");
-        String bootstrapServers = "hdfs://localhost:9092";
+        String bootstrapServers = "127.0.0.1:9092";
+        String topic = "demo_topic";
 
         // create Producer properties
         Properties properties = new Properties();
@@ -28,13 +28,16 @@ public class ProducerDemo {
         for (int i=0; i<10; i++ ) {
 
             // create a producer record
-
-            String topic = "demo_java";
             String value = "hello world " + i;
             String key = "id_" + i;
 
-            ProducerRecord<String, String> producerRecord =
-                    new ProducerRecord<>(topic, key, value);
+            try{
+                Thread.sleep(3000);
+            } catch (InterruptedException ignored){
+
+            }
+
+            ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, key, value);
 
             // send data - asynchronous
             producer.send(producerRecord, (recordMetadata, e) -> {

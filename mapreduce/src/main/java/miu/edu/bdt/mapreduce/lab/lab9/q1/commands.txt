@@ -1,0 +1,150 @@
+[cloudera@quickstart ~]$ spark-submit --master yarn mapreduce-1.0-SNAPSHOT-jar-with-dependencies.jar /user/cloudera/input/ /user/cloudera/output/ 30
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/lib/zookeeper/lib/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/jars/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+23/04/19 04:12:18 INFO spark.SparkContext: Running Spark version 1.6.0
+23/04/19 04:12:19 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+23/04/19 04:12:19 INFO spark.SecurityManager: Changing view acls to: cloudera
+23/04/19 04:12:19 INFO spark.SecurityManager: Changing modify acls to: cloudera
+23/04/19 04:12:19 INFO spark.SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(cloudera); users with modify permissions: Set(cloudera)
+23/04/19 04:12:19 INFO util.Utils: Successfully started service 'sparkDriver' on port 36453.
+23/04/19 04:12:20 INFO slf4j.Slf4jLogger: Slf4jLogger started
+23/04/19 04:12:20 INFO Remoting: Starting remoting
+23/04/19 04:12:20 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkDriverActorSystem@172.17.0.2:36429]
+23/04/19 04:12:20 INFO Remoting: Remoting now listens on addresses: [akka.tcp://sparkDriverActorSystem@172.17.0.2:36429]
+23/04/19 04:12:20 INFO util.Utils: Successfully started service 'sparkDriverActorSystem' on port 36429.
+23/04/19 04:12:20 INFO spark.SparkEnv: Registering MapOutputTracker
+23/04/19 04:12:20 INFO spark.SparkEnv: Registering BlockManagerMaster
+23/04/19 04:12:20 INFO storage.DiskBlockManager: Created local directory at /tmp/blockmgr-f0251219-f55b-47a5-a271-8a14787a67ed
+23/04/19 04:12:20 INFO storage.MemoryStore: MemoryStore started with capacity 530.0 MB
+23/04/19 04:12:20 INFO spark.SparkEnv: Registering OutputCommitCoordinator
+23/04/19 04:12:20 INFO server.Server: jetty-8.y.z-SNAPSHOT
+23/04/19 04:12:20 INFO server.AbstractConnector: Started SelectChannelConnector@0.0.0.0:4040
+23/04/19 04:12:20 INFO util.Utils: Successfully started service 'SparkUI' on port 4040.
+23/04/19 04:12:20 INFO ui.SparkUI: Started SparkUI at http://172.17.0.2:4040
+23/04/19 04:12:20 INFO spark.SparkContext: Added JAR file:/home/cloudera/mapreduce-1.0-SNAPSHOT-jar-with-dependencies.jar at spark://172.17.0.2:36453/jars/mapreduce-1.0-SNAPSHOT-jar-with-dependencies.jar with timestamp 1681877540565
+23/04/19 04:12:20 INFO executor.Executor: Starting executor ID driver on host localhost
+23/04/19 04:12:20 INFO util.Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 38913.
+23/04/19 04:12:20 INFO netty.NettyBlockTransferService: Server created on 38913
+23/04/19 04:12:20 INFO storage.BlockManagerMaster: Trying to register BlockManager
+23/04/19 04:12:20 INFO storage.BlockManagerMasterEndpoint: Registering block manager localhost:38913 with 530.0 MB RAM, BlockManagerId(driver, localhost, 38913)
+23/04/19 04:12:20 INFO storage.BlockManagerMaster: Registered BlockManager
+23/04/19 04:12:21 WARN shortcircuit.DomainSocketFactory: The short-circuit local reads feature cannot be used because libhadoop cannot be loaded.
+23/04/19 04:12:22 INFO storage.MemoryStore: Block broadcast_0 stored as values in memory (estimated size 65.4 KB, free 65.4 KB)
+23/04/19 04:12:22 INFO storage.MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 21.3 KB, free 86.6 KB)
+23/04/19 04:12:22 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on localhost:38913 (size: 21.3 KB, free: 530.0 MB)
+23/04/19 04:12:22 INFO spark.SparkContext: Created broadcast 0 from textFile at SparkWordCount.java:27
+23/04/19 04:12:22 INFO mapred.FileInputFormat: Total input paths to process : 1
+23/04/19 04:12:22 INFO Configuration.deprecation: mapred.tip.id is deprecated. Instead, use mapreduce.task.id
+23/04/19 04:12:22 INFO Configuration.deprecation: mapred.task.id is deprecated. Instead, use mapreduce.task.attempt.id
+23/04/19 04:12:22 INFO Configuration.deprecation: mapred.task.is.map is deprecated. Instead, use mapreduce.task.ismap
+23/04/19 04:12:22 INFO Configuration.deprecation: mapred.task.partition is deprecated. Instead, use mapreduce.task.partition
+23/04/19 04:12:22 INFO Configuration.deprecation: mapred.job.id is deprecated. Instead, use mapreduce.job.id
+23/04/19 04:12:22 INFO output.FileOutputCommitter: File Output Committer Algorithm version is 1
+23/04/19 04:12:22 INFO spark.SparkContext: Starting job: saveAsTextFile at SparkWordCount.java:45
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Registering RDD 4 (mapToPair at SparkWordCount.java:33)
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Registering RDD 8 (mapToPair at SparkWordCount.java:41)
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Got job 0 (saveAsTextFile at SparkWordCount.java:45) with 1 output partitions
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Final stage: ResultStage 2 (saveAsTextFile at SparkWordCount.java:45)
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Parents of final stage: List(ShuffleMapStage 1)
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Missing parents: List(ShuffleMapStage 1)
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[4] at mapToPair at SparkWordCount.java:33), which has no missing parents
+23/04/19 04:12:22 INFO storage.MemoryStore: Block broadcast_1 stored as values in memory (estimated size 6.1 KB, free 92.8 KB)
+23/04/19 04:12:22 INFO storage.MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.3 KB, free 96.0 KB)
+23/04/19 04:12:22 INFO storage.BlockManagerInfo: Added broadcast_1_piece0 in memory on localhost:38913 (size: 3.3 KB, free: 530.0 MB)
+23/04/19 04:12:22 INFO spark.SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1006
+23/04/19 04:12:22 INFO scheduler.DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[4] at mapToPair at SparkWordCount.java:33)
+23/04/19 04:12:22 INFO scheduler.TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+23/04/19 04:12:22 INFO scheduler.TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, localhost, partition 0,ANY, 2240 bytes)
+23/04/19 04:12:22 INFO executor.Executor: Running task 0.0 in stage 0.0 (TID 0)
+23/04/19 04:12:22 INFO executor.Executor: Fetching spark://172.17.0.2:36453/jars/mapreduce-1.0-SNAPSHOT-jar-with-dependencies.jar with timestamp 1681877540565
+23/04/19 04:12:22 INFO util.Utils: Fetching spark://172.17.0.2:36453/jars/mapreduce-1.0-SNAPSHOT-jar-with-dependencies.jar to /tmp/spark-eaa54154-c66b-415d-ad2f-fbb09e5516b0/userFiles-8914e4fc-b258-43ee-b9da-18f3fbea3921/fetchFileTemp4946572957968409123.tmp
+23/04/19 04:12:25 INFO executor.Executor: Adding file:/tmp/spark-eaa54154-c66b-415d-ad2f-fbb09e5516b0/userFiles-8914e4fc-b258-43ee-b9da-18f3fbea3921/mapreduce-1.0-SNAPSHOT-jar-with-dependencies.jar to class loader
+23/04/19 04:12:25 INFO rdd.HadoopRDD: Input split: hdfs://quickstart.cloudera:8020/user/cloudera/input/input.txt:0+1017
+23/04/19 04:12:25 INFO executor.Executor: Finished task 0.0 in stage 0.0 (TID 0). 2253 bytes result sent to driver
+23/04/19 04:12:25 INFO scheduler.TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 2846 ms on localhost (1/1)
+23/04/19 04:12:25 INFO scheduler.TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: ShuffleMapStage 0 (mapToPair at SparkWordCount.java:33) finished in 2.885 s
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: looking for newly runnable stages
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: running: Set()
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: waiting: Set(ShuffleMapStage 1, ResultStage 2)
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: failed: Set()
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: Submitting ShuffleMapStage 1 (MapPartitionsRDD[8] at mapToPair at SparkWordCount.java:41), which has no missing parents
+23/04/19 04:12:25 INFO storage.MemoryStore: Block broadcast_2 stored as values in memory (estimated size 5.1 KB, free 101.2 KB)
+23/04/19 04:12:25 INFO storage.MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.7 KB, free 103.9 KB)
+23/04/19 04:12:25 INFO storage.BlockManagerInfo: Added broadcast_2_piece0 in memory on localhost:38913 (size: 2.7 KB, free: 530.0 MB)
+23/04/19 04:12:25 INFO spark.SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1006
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 1 (MapPartitionsRDD[8] at mapToPair at SparkWordCount.java:41)
+23/04/19 04:12:25 INFO scheduler.TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+23/04/19 04:12:25 INFO scheduler.TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, localhost, partition 0,NODE_LOCAL, 1971 bytes)
+23/04/19 04:12:25 INFO executor.Executor: Running task 0.0 in stage 1.0 (TID 1)
+23/04/19 04:12:25 INFO storage.ShuffleBlockFetcherIterator: Getting 1 non-empty blocks out of 1 blocks
+23/04/19 04:12:25 INFO storage.ShuffleBlockFetcherIterator: Started 0 remote fetches in 3 ms
+23/04/19 04:12:25 INFO executor.Executor: Finished task 0.0 in stage 1.0 (TID 1). 1374 bytes result sent to driver
+23/04/19 04:12:25 INFO scheduler.TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 63 ms on localhost (1/1)
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: ShuffleMapStage 1 (mapToPair at SparkWordCount.java:41) finished in 0.063 s
+23/04/19 04:12:25 INFO scheduler.TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: looking for newly runnable stages
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: running: Set()
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: waiting: Set(ResultStage 2)
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: failed: Set()
+23/04/19 04:12:25 INFO scheduler.DAGScheduler: Submitting ResultStage 2 (MapPartitionsRDD[10] at saveAsTextFile at SparkWordCount.java:45), which has no missing parents
+23/04/19 04:12:25 INFO storage.MemoryStore: Block broadcast_3 stored as values in memory (estimated size 70.2 KB, free 174.1 KB)
+23/04/19 04:12:26 INFO storage.MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 25.0 KB, free 199.1 KB)
+23/04/19 04:12:26 INFO storage.BlockManagerInfo: Added broadcast_3_piece0 in memory on localhost:38913 (size: 25.0 KB, free: 530.0 MB)
+23/04/19 04:12:26 INFO spark.SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1006
+23/04/19 04:12:26 INFO scheduler.DAGScheduler: Submitting 1 missing tasks from ResultStage 2 (MapPartitionsRDD[10] at saveAsTextFile at SparkWordCount.java:45)
+23/04/19 04:12:26 INFO scheduler.TaskSchedulerImpl: Adding task set 2.0 with 1 tasks
+23/04/19 04:12:26 INFO scheduler.TaskSetManager: Starting task 0.0 in stage 2.0 (TID 2, localhost, partition 0,NODE_LOCAL, 1982 bytes)
+23/04/19 04:12:26 INFO executor.Executor: Running task 0.0 in stage 2.0 (TID 2)
+23/04/19 04:12:26 INFO storage.ShuffleBlockFetcherIterator: Getting 1 non-empty blocks out of 1 blocks
+23/04/19 04:12:26 INFO storage.ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+23/04/19 04:12:26 INFO output.FileOutputCommitter: File Output Committer Algorithm version is 1
+23/04/19 04:12:26 INFO output.FileOutputCommitter: Saved output of task 'attempt_202304190412_0002_m_000000_2' to hdfs://quickstart.cloudera:8020/user/cloudera/output/_temporary/0/task_202304190412_0002_m_000000
+23/04/19 04:12:26 INFO mapred.SparkHadoopMapRedUtil: attempt_202304190412_0002_m_000000_2: Committed
+23/04/19 04:12:26 INFO executor.Executor: Finished task 0.0 in stage 2.0 (TID 2). 2080 bytes result sent to driver
+23/04/19 04:12:26 INFO scheduler.TaskSetManager: Finished task 0.0 in stage 2.0 (TID 2) in 819 ms on localhost (1/1)
+23/04/19 04:12:26 INFO scheduler.DAGScheduler: ResultStage 2 (saveAsTextFile at SparkWordCount.java:45) finished in 0.820 s
+23/04/19 04:12:26 INFO scheduler.TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool
+23/04/19 04:12:26 INFO scheduler.DAGScheduler: Job 0 finished: saveAsTextFile at SparkWordCount.java:45, took 4.121096 s
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/metrics/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages/stage/kill,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/api,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/static,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/executors/threadDump/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/executors/threadDump,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/executors/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/executors,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/environment/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/environment,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/storage/rdd/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/storage/rdd,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/storage/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/storage,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages/pool/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages/pool,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages/stage/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages/stage,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/stages,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/jobs/job/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/jobs/job,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/jobs/json,null}
+23/04/19 04:12:26 INFO handler.ContextHandler: stopped o.s.j.s.ServletContextHandler{/jobs,null}
+23/04/19 04:12:26 INFO ui.SparkUI: Stopped Spark web UI at http://172.17.0.2:4040
+23/04/19 04:12:26 INFO spark.MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+23/04/19 04:12:27 INFO storage.MemoryStore: MemoryStore cleared
+23/04/19 04:12:27 INFO storage.BlockManager: BlockManager stopped
+23/04/19 04:12:27 INFO storage.BlockManagerMaster: BlockManagerMaster stopped
+23/04/19 04:12:27 INFO scheduler.OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+23/04/19 04:12:27 INFO remote.RemoteActorRefProvider$RemotingTerminator: Shutting down remote daemon.
+23/04/19 04:12:27 INFO remote.RemoteActorRefProvider$RemotingTerminator: Remote daemon shut down; proceeding with flushing remote transports.
+23/04/19 04:12:27 INFO spark.SparkContext: Successfully stopped SparkContext
+23/04/19 04:12:27 INFO util.ShutdownHookManager: Shutdown hook called
+23/04/19 04:12:27 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-eaa54154-c66b-415d-ad2f-fbb09e5516b0
+23/04/19 04:12:27 INFO Remoting: Remoting shut down
+23/04/19 04:12:27 INFO remote.RemoteActorRefProvider$RemotingTerminator: Remoting shut down.
+[cloudera@quickstart ~]$

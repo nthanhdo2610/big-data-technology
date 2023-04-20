@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -45,19 +46,18 @@ public class ProducerDemo {
             for (String zip : set) {
                 String data = getWeatherData(zip);
                 if (!data.isEmpty()) {
-                    ProducerRecord<String, String> record = new ProducerRecord<>(topic, zip, data);
-                    executorService.execute(() -> publishData(producer, record));
-                }
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ignored) {
-
+                    executorService.execute(() -> publishData(producer, new ProducerRecord<>(topic, zip, data)));
                 }
             }
             // flush data - synchronous
             producer.flush();
             // flush and close producer
             producer.close();
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ignored) {
+
+            }
         }
     }
 
@@ -107,7 +107,7 @@ public class ProducerDemo {
                     .build();
             Response response = client.newCall(request).execute();
             if (response.code() == 200) {
-                return response.body().string();
+                return Objects.requireNonNull(response.body()).string();
             } else {
                 throw new Exception(response.message());
             }

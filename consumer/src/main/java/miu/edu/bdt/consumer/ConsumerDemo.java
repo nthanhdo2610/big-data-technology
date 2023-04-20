@@ -16,9 +16,9 @@ public class ConsumerDemo {
 
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(ConsumerDemo.class.getName());
-        String bootstrapServers = "localhost:9092";
+        String bootstrapServers = "quickstart.cloudera:9092";
         String grp_id = "demo_app";
-        String topic = "demo_topic";
+        String topic = "weather_topic";
         //Creating consumer properties
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);

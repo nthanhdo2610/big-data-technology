@@ -16,6 +16,7 @@ public class KProducer {
 
 	private static final Logger logger = LoggerFactory.getLogger(KProducer.class);
 	private static final String DEFAULT_INPUT = "weatherAUS.csv";
+	private static final ProducerService service = new ProducerService();
 
 	public static void main(String[] args) {
 		String input = args.length > 0 ? args[0] : null;
@@ -37,9 +38,9 @@ public class KProducer {
 
 	private static void publish(List<String> data) throws IOException {
 		// create the producer
-		Producer<String, String> producer = KafkaConfig.createProducer();
+		Producer<String, String> producer = service.createProducer();
         
-        data.stream().map(d -> new ProducerRecord<String, String>(KafkaConfig.TOPIC_NAME, d)).forEach(record -> {
+        data.stream().map(d -> new ProducerRecord<String, String>(Constant.TOPIC_NAME, d)).forEach(record -> {
 			try {
 				producer.send(record).get();
 			} catch (InterruptedException | ExecutionException e) {

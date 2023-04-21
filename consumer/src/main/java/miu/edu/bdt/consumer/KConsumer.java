@@ -21,7 +21,6 @@ import java.util.Map;
 public class KConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(KConsumer.class);
-    public static final String TOPIC_NAME = "weather_topic";
 
     public static void main(String[] args) {
         startConsumer();
@@ -35,14 +34,14 @@ public class KConsumer {
                     new SparkConf().setAppName("SparkStreaming").setMaster("local[*]"), new Duration(250));
 
             Map<String, Object> kafkaParams = new HashMap<>();
-            kafkaParams.put("bootstrap.servers", "quickstart.cloudera:9092");
+            kafkaParams.put("bootstrap.servers", Constant.KAFKA_BROKERS);
             kafkaParams.put("key.deserializer", StringDeserializer.class);
             kafkaParams.put("value.deserializer", StringDeserializer.class);
             kafkaParams.put("group.id", "group");
             kafkaParams.put("auto.offset.reset", "latest");
             kafkaParams.put("enable.auto.commit", false);
 
-            Collection<String> topics = Collections.singletonList(TOPIC_NAME);
+            Collection<String> topics = Collections.singletonList(Constant.TOPIC_NAME);
 
             JavaInputDStream<ConsumerRecord<String, String>> stream =
                     KafkaUtils.createDirectStream(

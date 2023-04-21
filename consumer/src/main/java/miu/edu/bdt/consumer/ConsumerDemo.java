@@ -1,5 +1,7 @@
 package miu.edu.bdt.consumer;
 
+import com.google.gson.Gson;
+import miu.edu.bdt.consumer.dto.WeatherData;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -13,14 +15,14 @@ import java.util.Properties;
 
 public class ConsumerDemo {
 
+    private static final Gson gson = new Gson();
+
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(ConsumerDemo.class.getName());
-        String bootstrapServers = "quickstart.cloudera:9092";
         String grp_id = "demo_app";
-        String topic = "weather_topic";
         //Creating consumer properties
         Properties properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Constant.KAFKA_BROKERS);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, grp_id);
@@ -28,13 +30,15 @@ public class ConsumerDemo {
         //creating consumer
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
         //Subscribing
-        consumer.subscribe(Collections.singletonList(topic));
+        consumer.subscribe(Collections.singletonList(Constant.TOPIC_NAME));
         //polling
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
-                logger.info("Key: " + record.key() + ", Value:" + record.value());
                 logger.info("Partition:" + record.partition() + ",Offset:" + record.offset());
+                WeatherData data = gson.fromJson(record.value(), WeatherData.class);
+                data.setZipcode(record.key());
+                System.out.println(data);
             }
         }
     }

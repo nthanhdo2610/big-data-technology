@@ -12,9 +12,11 @@ import org.apache.spark.streaming.kafka010.LocationStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -59,6 +61,14 @@ public class KConsumer {
                     repo.insertRecord(record);
                 }
             }));
+//            // Insert data into Hive from Kafka
+//            List<WeatherRecord> list = new ArrayList<>();
+//            stream.foreachRDD(rdd -> rdd.foreach(x -> {
+//                if(list.size() < 500) {
+//                    list.add(RecordParser.parse(x.value()));
+//                }
+//            }));
+//            repo.batchInsert(list);
 
             streamingContext.start();
             streamingContext.awaitTermination();

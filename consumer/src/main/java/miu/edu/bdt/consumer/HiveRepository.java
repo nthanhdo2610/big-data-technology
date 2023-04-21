@@ -3,6 +3,7 @@ package miu.edu.bdt.consumer;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,9 @@ public class HiveRepository implements Serializable {
 		try {
 			Statement stmt = HiveConfig.getHiveConnection().createStatement();
 			// Execute DROP TABLE Query
-			stmt.execute(String.format(Constant.DROP_TABLE_SQL, Constant.TABLE_NAME));
+			stmt.execute(String.format(Constant.DROP_TABLE_SQL, Constant.TABLE_NAME_TEST));
 			// Execute CREATE Query
-			stmt.execute(String.format(CREATED_TABLE_SQL, Constant.TABLE_NAME));
+			stmt.execute(String.format(CREATED_TABLE_SQL, Constant.TABLE_NAME_TEST));
 		} catch (SQLException e) {
 			logger.error("Cannot create Hive connection. " + e);
 			System.exit(0);
@@ -43,7 +44,7 @@ public class HiveRepository implements Serializable {
 	
 	public void insertRecord(WeatherRecord record) {
 		String sql = String.format(INSERT_SQL,
-				Constant.TABLE_NAME,
+				Constant.TABLE_NAME_TEST,
 				record.getDate(),
 				record.getLocation(),
 				record.getMinTemp(),
@@ -76,5 +77,44 @@ public class HiveRepository implements Serializable {
 		}
 		
 	}
+
+//	public void batchInsert(List<WeatherRecord> records) {
+//		Statement stmt = HiveConfig.createStatement();
+//		try {
+//			for(WeatherRecord record : records){
+//				String sql = String.format(INSERT_SQL,
+//						Constant.TABLE_NAME_TEST,
+//						record.getDate(),
+//						record.getLocation(),
+//						record.getMinTemp(),
+//						record.getMaxTemp(),
+//						record.getRainfall(),
+//						record.getEvaporation(),
+//						record.getSunshine(),
+//						record.getWindGustDir(),
+//						record.getWindGustSpeed(),
+//						record.getWindDir9am(),
+//						record.getWindDir3pm(),
+//						record.getWindSpeed9am(),
+//						record.getWindSpeed3pm(),
+//						record.getHumidity9am(),
+//						record.getHumidity3pm(),
+//						record.getPressure9am(),
+//						record.getPressure3pm(),
+//						record.getCloud9am(),
+//						record.getCloud3pm(),
+//						record.getTemp9am(),
+//						record.getTemp9am(),
+//						record.getRainToday(),
+//						record.getRainTomorrow());
+//				stmt.addBatch(sql);
+//			}
+//			stmt.executeBatch();
+//		} catch (SQLException e) {
+//			logger.error("Cannot create Hive connection. " + e);
+//			System.exit(0);
+//		}
+//
+//	}
 	
 }

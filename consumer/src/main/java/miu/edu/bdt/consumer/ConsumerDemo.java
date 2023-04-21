@@ -2,6 +2,7 @@ package miu.edu.bdt.consumer;
 
 import com.google.gson.Gson;
 import miu.edu.bdt.consumer.dto.WeatherData;
+import miu.edu.bdt.consumer.model.Weather;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -16,6 +17,7 @@ import java.util.Properties;
 public class ConsumerDemo {
 
     private static final Gson gson = new Gson();
+    private static final ConsumerService service = ConsumerService.getInstance();
 
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(ConsumerDemo.class.getName());
@@ -36,9 +38,10 @@ public class ConsumerDemo {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 logger.info("Partition:" + record.partition() + ",Offset:" + record.offset());
-                WeatherData data = gson.fromJson(record.value(), WeatherData.class);
-                data.setZipcode(record.key());
-                System.out.println(data);
+                WeatherData dto = gson.fromJson(record.value(), WeatherData.class);
+                dto.setZipcode(record.key());
+                Weather model = new Weather(dto);
+                service.batchInsert(Collections.singletonList(model));
             }
         }
     }

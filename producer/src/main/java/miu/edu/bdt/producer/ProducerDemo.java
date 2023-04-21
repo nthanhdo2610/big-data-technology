@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,57 +24,84 @@ public class ProducerDemo {
     public static void main(String[] args) {
 
         // Zip code datasets
-        Set<String> set = service.getUsZip();
-
+        List<String> datasets = service.getUsZip();
+        List<List<String>> chunks = service.chunkData(datasets, Constant.CHUNK_SIZE);
         while (true) {
 
             //create a list to hold the Future object associated with Callable
-            List<Future<Weather>> dataFutures = new ArrayList<>();
+            List<Future<Integer>> futures = new ArrayList<>();
 
-            // create the producer
-            KafkaProducer<String, String> producer = service.createProducer();
-            List<Weather> weathers = new ArrayList<>();
-
-            for (String zip : set) {
-
+            for (List<String> zipcodes : chunks) {
                 //submit Callable tasks to be executed by thread pool
-                Future<Weather> future = executor.submit(() -> service.getWeatherData(zip));
+                Future<Integer> future = executor.submit(() -> process(zipcodes));
 
                 //add Future to the list, we can get return value using Future
-                dataFutures.add(future);
+                futures.add(future);
             }
 
-            for (Future<Weather> data : dataFutures) {
+            for (Future<Integer> data : futures) {
                 try {
                     //print the return value of Future, notice the output delay in console
                     // because Future.get() waits for task to get completed
-                    Weather weather = data.get();
-                    if (weather != null) {
-                        weathers.add(weather);
-                    }
+                    data.get();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
 
-            service.publishData(
-                    producer,
-                    new ProducerRecord<>(Constant.TOPIC_NAME,
-                    String.valueOf(System.currentTimeMillis()),
-                    gson.toJson(weathers, new TypeToken<List<Weather>>() {}.getType()))
-            );
-
-            // flush data - synchronous
-            producer.flush();
-
-            // flush and close producer
-            producer.close();
-
             try {
-                Thread.sleep(60000 * 5);
-            } catch (InterruptedException ignored) {
-
+                Thread.sleep(6000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    static int process(List<String> zipcodes) {
+
+        // create the producer
+        KafkaProducer<String, String> producer = service.createProducer();
+        List<Weather> weathers = new ArrayList<>();
+
+        //create a list to hold the Future object associated with Callable
+        List<Future<Weather>> dataFutures = new ArrayList<>();
+
+        for (String zip : zipcodes) {
+
+            //submit Callable tasks to be executed by thread pool
+            Future<Weather> future = executor.submit(() -> service.getWeatherData(zip));
+
+            //add Future to the list, we can get return value using Future
+            dataFutures.add(future);
+        }
+
+        for (Future<Weather> data : dataFutures) {
+            try {
+                //print the return value of Future, notice the output delay in console
+                // because Future.get() waits for task to get completed
+                Weather weather = data.get();
+                if (weather != null) {
+                    weathers.add(weather);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        service.publishData(
+                producer,
+                new ProducerRecord<>(Constant.TOPIC_NAME,
+                        String.valueOf(System.currentTimeMillis()),
+                        gson.toJson(weathers, new TypeToken<List<Weather>>() {
+                        }.getType()))
+        );
+
+        // flush data - synchronous
+        producer.flush();
+
+        // flush and close producer
+        producer.close();
+
+        return 1;
     }
 }

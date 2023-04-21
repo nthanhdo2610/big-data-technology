@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
@@ -41,9 +43,9 @@ public class ProducerService {
     }
 
 
-    public Set<String> getUsZip() {
+    public List<String> getUsZip() {
         CSVReader reader = null;
-        Set<String> zips = new HashSet<>();
+        List<String> zips = new ArrayList<>();
         try {
             InputStream is = ProducerDemo.class.getResourceAsStream("/us_zip_codes_test.csv");
             if (is == null) {
@@ -75,6 +77,20 @@ public class ProducerService {
             }
         }
         return zips;
+    }
+
+    public List<List<String>> chunkData(List<String> list, int n) {
+        List<List<String>> chunks = new ArrayList<>();
+
+        int size = list.size();
+        int chunkSize = (int) Math.ceil((double) size / n);
+
+        for (int i = 0; i < size; i += chunkSize) {
+            int end = Math.min(size, i + chunkSize);
+            chunks.add(list.subList(i, end));
+        }
+
+        return chunks;
     }
 
     public Weather getWeatherData(String zipcode) {

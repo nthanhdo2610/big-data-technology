@@ -8,7 +8,6 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -32,7 +31,7 @@ public class ConsumerDemo {
         consumer.subscribe(Collections.singletonList(topic));
         //polling
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 logger.info("Key: " + record.key() + ", Value:" + record.value());
                 logger.info("Partition:" + record.partition() + ",Offset:" + record.offset());

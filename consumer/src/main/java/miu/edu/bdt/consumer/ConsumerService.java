@@ -49,10 +49,15 @@ public class ConsumerService {
         }
         try {
             statement = connection.createStatement();
-            // Execute CREATE Query
+
+            String drop = String.format(Constant.DROP_TABLE_SQL, Constant.TABLE_NAME);
+            System.out.println("DROP_TABLE_SQL: " + drop);
+            statement.execute(drop);
+
             String sql = String.format(Constant.CREATE_WEATHER_TABLE_SQL, Constant.TABLE_NAME);
             System.out.println("CREATE_WEATHER_TABLE_SQL: " + sql);
             statement.execute(sql);
+
         } catch (SQLException e) {
             logger.error("Cannot create Hive connection. " + e);
             e.printStackTrace();

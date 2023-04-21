@@ -1,9 +1,8 @@
-package miu.edu.bdt.consumer.model;
+package miu.edu.bdt.producer.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import miu.edu.bdt.consumer.dto.WeatherData;
 
 @Getter
 @Setter
@@ -13,8 +12,8 @@ public class Weather {
     private String zipcode;
     private float temp;
 
-    public Weather(WeatherData dto) {
-        this.zipcode = dto.getZipcode();
+    public Weather(String zipcode, WeatherData dto) {
+        this.zipcode = zipcode;
         this.temp = dto.getCurrent().getTemp_f();
     }
 }

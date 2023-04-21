@@ -1,6 +1,5 @@
 package miu.edu.bdt.consumer;
 
-import miu.edu.bdt.consumer.model.Weather;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +65,9 @@ public class ConsumerService {
     }
 
     public void batchInsert(List<Weather> records) {
+        if(records.isEmpty()){
+            return;
+        }
         try {
             StringJoiner joiner = new StringJoiner(",");
             records.stream().map(record -> String.format("(\"%s\",\"%s\")", record.getZipcode(), record.getTemp())).forEach(joiner::add);

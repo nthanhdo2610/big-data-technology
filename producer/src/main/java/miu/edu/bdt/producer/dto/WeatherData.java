@@ -1,4 +1,4 @@
-package miu.edu.bdt.consumer.dto;
+package miu.edu.bdt.producer.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class Condition {
-    private String text;
-    private String icon;
-    private int code;
+public class WeatherData {
+    private Location location;
+    private Current current;
 }

@@ -1,8 +1,8 @@
 package miu.edu.bdt.consumer;
 
 import com.google.gson.Gson;
-import miu.edu.bdt.consumer.dto.WeatherData;
-import miu.edu.bdt.consumer.model.Weather;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConsumerDemo {
@@ -54,10 +55,13 @@ public class ConsumerDemo {
         stream.foreachRDD(rdd -> rdd.foreach(record -> {
             if (record != null) {
                 logger.info("Partition:" + record.partition() + ",Offset:" + record.offset());
-                WeatherData dto = gson.fromJson(record.value(), WeatherData.class);
-                dto.setZipcode(record.key());
-                Weather model = new Weather(dto);
-                service.batchInsert(Collections.singletonList(model));
+                try {
+                    List<Weather> weathers = gson.fromJson(record.value(), new TypeToken<List<Weather>>() {
+                    }.getType());
+                    service.batchInsert(weathers);
+                } catch (JsonSyntaxException e){
+                    e.printStackTrace();
+                }
             }
         }));
 

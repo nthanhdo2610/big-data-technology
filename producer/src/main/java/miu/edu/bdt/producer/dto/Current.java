@@ -1,4 +1,4 @@
-package miu.edu.bdt.consumer.dto;
+package miu.edu.bdt.producer.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

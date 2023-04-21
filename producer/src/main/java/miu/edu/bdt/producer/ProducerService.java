@@ -1,6 +1,9 @@
 package miu.edu.bdt.producer;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.google.gson.Gson;
+import miu.edu.bdt.producer.dto.Weather;
+import miu.edu.bdt.producer.dto.WeatherData;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -23,6 +26,7 @@ public class ProducerService {
 
     private static final OkHttpClient client = new OkHttpClient();
     private static final Logger log = LoggerFactory.getLogger(ProducerService.class);
+    private static final Gson gson = new Gson();
 
     public KafkaProducer<String, String> createProducer() {
 
@@ -73,7 +77,7 @@ public class ProducerService {
         return zips;
     }
 
-    public String getWeatherData(String zipcode) {
+    public Weather getWeatherData(String zipcode) {
         try {
             Request request = new Request.Builder()
                     .url("https://weatherapi-com.p.rapidapi.com/current.json?q=" + zipcode)
@@ -83,17 +87,19 @@ public class ProducerService {
                     .build();
             Response response = client.newCall(request).execute();
             if (response.code() == 200) {
-                return Objects.requireNonNull(response.body()).string();
+                String body = Objects.requireNonNull(response.body()).string();
+                WeatherData dto = gson.fromJson(body, WeatherData.class);
+                return new Weather(zipcode, dto);
             } else {
                 throw new Exception(response.message());
             }
         } catch (Exception e) {
             log.error("GET Weather data by zip " + zipcode + " error " + e.getMessage());
         }
-        return "";
+        return null;
     }
 
-    public ProducerRecord<String, String> publishData(KafkaProducer<String, String> producer, ProducerRecord<String, String> producerRecord) {
+    public void publishData(KafkaProducer<String, String> producer, ProducerRecord<String, String> producerRecord) {
 
         // send data - asynchronous
         producer.send(producerRecord, (recordMetadata, e) -> {
@@ -111,6 +117,5 @@ public class ProducerService {
                 log.error("Error while producing", e);
             }
         });
-        return producerRecord;
     }
 }

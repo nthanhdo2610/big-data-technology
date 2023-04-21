@@ -1,5 +1,8 @@
 package miu.edu.bdt.producer;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import miu.edu.bdt.producer.dto.Weather;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
@@ -17,40 +20,50 @@ public class ProducerDemo {
     private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class);
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final ProducerService service = new ProducerService();
+    private static final Gson gson = new Gson();
 
     public static void main(String[] args) {
 
         // Zip code datasets
         Set<String> set = service.getUsZip();
 
-        //create a list to hold the Future object associated with Callable
-        List<Future<ProducerRecord<String, String>>> list = new ArrayList<>();
-
-
         while (true) {
+
+            //create a list to hold the Future object associated with Callable
+            List<Future<Weather>> dataFutures = new ArrayList<>();
 
             // create the producer
             KafkaProducer<String, String> producer = service.createProducer();
+            List<Weather> weathers = new ArrayList<>();
 
             for (String zip : set) {
-                String data = service.getWeatherData(zip);
 
                 //submit Callable tasks to be executed by thread pool
-                Future<ProducerRecord<String, String>> future = executor.submit(() -> service.publishData(producer, new ProducerRecord<>(Constant.TOPIC_NAME, zip, data)));
+                Future<Weather> future = executor.submit(() -> service.getWeatherData(zip));
 
                 //add Future to the list, we can get return value using Future
-                list.add(future);
+                dataFutures.add(future);
             }
 
-            for (Future<ProducerRecord<String, String>> fut : list) {
+            for (Future<Weather> data : dataFutures) {
                 try {
                     //print the return value of Future, notice the output delay in console
                     // because Future.get() waits for task to get completed
-                    fut.get();
+                    Weather weather = data.get();
+                    if (weather != null) {
+                        weathers.add(weather);
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
+
+            service.publishData(
+                    producer,
+                    new ProducerRecord<>(Constant.TOPIC_NAME,
+                    String.valueOf(System.currentTimeMillis()),
+                    gson.toJson(weathers, new TypeToken<List<Weather>>() {}.getType()))
+            );
 
             // flush data - synchronous
             producer.flush();
@@ -59,7 +72,7 @@ public class ProducerDemo {
             producer.close();
 
             try {
-                Thread.sleep(15000);
+                Thread.sleep(60000 * 5);
             } catch (InterruptedException ignored) {
 
             }

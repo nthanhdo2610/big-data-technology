@@ -15,7 +15,6 @@ import java.util.concurrent.Future;
 
 class ProducerServiceTest {
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final Gson gson = new Gson();
 
     @Test

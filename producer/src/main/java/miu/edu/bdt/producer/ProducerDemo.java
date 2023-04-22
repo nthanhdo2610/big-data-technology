@@ -19,7 +19,6 @@ public class ProducerDemo {
         List<String> datasets = service.getUsZip();
         List<List<String>> chunks = service.chunkData(datasets, Constant.CHUNK_SIZE);
         while (true) {
-
             for (List<String> zipcodes : chunks) {
                 process(zipcodes);
             }

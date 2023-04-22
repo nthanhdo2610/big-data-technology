@@ -6,6 +6,7 @@ import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +23,6 @@ class ProducerDemoTest {
                 .addHeader("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com")
                 .build();
         Response response = client.newCall(request).execute();
-        System.out.println(response.body().string());
+        System.out.println(Objects.requireNonNull(response.body()).string());
     }
 }

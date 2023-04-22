@@ -136,7 +136,7 @@ public class ProducerService {
                 return new Weather(zipcode, dto, simpleDateFormat.format(new Date()));
             } else {
                 invalidZipcodes.add(zipcode);
-                log.warn("GET Weather data by zip " + zipcode + " error " + Objects.requireNonNull(response.body()).string());
+                log.warn("GET Weather data by zip " + zipcode + " " + Objects.requireNonNull(response.body()).string());
             }
         } catch (Exception e) {
             e.printStackTrace();

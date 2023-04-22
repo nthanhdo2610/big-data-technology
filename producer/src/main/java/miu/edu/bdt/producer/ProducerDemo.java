@@ -14,15 +14,14 @@ public class ProducerDemo {
     private static final Gson gson = new Gson();
 
     public static void main(String[] args) {
-
         // Zip code datasets
         List<String> datasets = service.getUsZip();
-        List<List<String>> chunks = service.chunkData(datasets, Constant.CHUNK_SIZE);
-        while (true) {
+        List<List<String>> chunks = service.chunkData(datasets, Constant.NUMBER_OF_FILES_CHUNK);
+//        while (true) {
             for (List<String> zipcodes : chunks) {
                 process(zipcodes);
             }
-        }
+//        }
     }
 
     static void process(List<String> zipcodes) {

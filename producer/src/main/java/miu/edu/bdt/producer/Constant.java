@@ -6,6 +6,6 @@ public class Constant {
     public static final String KAFKA_BROKERS = "quickstart.cloudera:9092";
     public static final String TOPIC_NAME = "weather_topic";
     public static final String MESSAGE_SIZE = "20971520";
-    public static final int CHUNK_SIZE = 100;
+    public static final int NUMBER_OF_FILES_CHUNK = 30;
 
 }

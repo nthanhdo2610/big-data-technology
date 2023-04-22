@@ -127,7 +127,6 @@ public class ProducerService {
             }
         } catch (Exception e) {
             log.error("GET Weather data by zip " + zipcode + " error " + e.getMessage());
-            e.printStackTrace();
         } finally {
             if (response != null) {
                 response.close();

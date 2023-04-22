@@ -26,19 +26,29 @@ import java.util.Set;
 
 public class ProducerService {
 
+    private static ProducerService INSTANCE = null;
     private static final OkHttpClient client = new OkHttpClient();
     private static final Logger log = LoggerFactory.getLogger(ProducerService.class);
     private static final Gson gson = new Gson();
+    private static final Set<String> invalidZipcodes = new HashSet<>();
 
-    public KafkaProducer<String, String> createProducer() {
+    public static ProducerService getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ProducerService();
+        }
+        return INSTANCE;
+    }
 
+    private ProducerService() {
+    }
+
+    public KafkaProducer<String, String> getProducer() {
         // create Producer properties
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Constant.KAFKA_BROKERS);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, Constant.MESSAGE_SIZE);
-
         return new KafkaProducer<>(properties);
     }
 
@@ -47,22 +57,22 @@ public class ProducerService {
         CSVReader reader = null;
         List<String> zips = new ArrayList<>();
         try {
-            InputStream is = ProducerDemo.class.getResourceAsStream("/us_zip_codes_test.csv");
+            InputStream is = ProducerDemo.class.getResourceAsStream(Constant.DATA_TEST_SOURCES);
             if (is == null) {
                 throw new IOException();
             }
             reader = new CSVReader(new InputStreamReader(is));
             String[] line;
             while ((line = reader.readNext()) != null) {
-                String code = "";
-                int zip = Integer.parseInt(line[0]);
-                if (zip < 1000) {
-                    code = "00" + zip;
-                } else if (zip < 10000) {
-                    code = "0" + zip;
-                } else {
-                    code = line[0];
-                }
+                String code = line[0];
+//                int zip = Integer.parseInt(line[0]);
+//                if (zip < 1000) {
+//                    code = "00" + zip;
+//                } else if (zip < 10000) {
+//                    code = "0" + zip;
+//                } else {
+//                    code = line[0];
+//                }
                 zips.add(code);
             }
         } catch (IOException e) {
@@ -94,23 +104,34 @@ public class ProducerService {
     }
 
     public Weather getWeatherData(String zipcode) {
+        Request request = new Request.Builder()
+                .url("https://weatherapi-com.p.rapidapi.com/current.json?q=" + zipcode)
+                .get()
+                .addHeader("X-RapidAPI-Key", "35ae57a75dmshfa432d963090737p1251cfjsn78a4b5dbd63a")
+                .addHeader("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com")
+                .build();
+        Response response = null;
+        if (invalidZipcodes.contains(zipcode)) {
+            log.error("Invalid zipcode " + zipcode);
+            return null;
+        }
         try {
-            Request request = new Request.Builder()
-                    .url("https://weatherapi-com.p.rapidapi.com/current.json?q=" + zipcode)
-                    .get()
-                    .addHeader("X-RapidAPI-Key", "35ae57a75dmshfa432d963090737p1251cfjsn78a4b5dbd63a")
-                    .addHeader("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com")
-                    .build();
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if (response.code() == 200) {
                 String body = Objects.requireNonNull(response.body()).string();
                 WeatherData dto = gson.fromJson(body, WeatherData.class);
                 return new Weather(zipcode, dto);
             } else {
+                invalidZipcodes.add(zipcode);
                 throw new Exception(response.message());
             }
         } catch (Exception e) {
             log.error("GET Weather data by zip " + zipcode + " error " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
         return null;
     }

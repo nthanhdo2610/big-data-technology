@@ -13,5 +13,6 @@ public class Weather {
 
     private String zipcode;
     private float temp;
+    private String updatedDate;
 
 }

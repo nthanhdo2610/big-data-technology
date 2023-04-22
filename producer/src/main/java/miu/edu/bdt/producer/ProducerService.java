@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,7 @@ public class ProducerService {
     private static final Logger log = LoggerFactory.getLogger(ProducerService.class);
     private static final Gson gson = new Gson();
     private static final Set<String> invalidZipcodes = new HashSet<>();
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constant.HIVE_TIMESTAMP_FORMAT);
 
     public static ProducerService getInstance() {
         if (INSTANCE == null) {
@@ -123,7 +126,6 @@ public class ProducerService {
                 .build();
         Response response = null;
         if (invalidZipcodes.contains(zipcode)) {
-            log.error("Invalid zipcode " + zipcode);
             return null;
         }
         try {
@@ -131,13 +133,13 @@ public class ProducerService {
             if (response.code() == 200) {
                 String body = Objects.requireNonNull(response.body()).string();
                 WeatherData dto = gson.fromJson(body, WeatherData.class);
-                return new Weather(zipcode, dto);
+                return new Weather(zipcode, dto, simpleDateFormat.format(new Date()));
             } else {
                 invalidZipcodes.add(zipcode);
-                throw new Exception(response.message());
+                log.warn("GET Weather data by zip " + zipcode + " error " + Objects.requireNonNull(response.body()).string());
             }
         } catch (Exception e) {
-            log.warn("GET Weather data by zip " + zipcode + " error " + e.getMessage());
+            e.printStackTrace();
         } finally {
             if (response != null) {
                 response.close();

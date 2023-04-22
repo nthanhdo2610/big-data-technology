@@ -8,26 +8,38 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ProducerDemo {
     private static final ProducerService service = ProducerService.getInstance();
     private static final Gson gson = new Gson();
     private static final ExecutorService executor = Executors.newFixedThreadPool(5);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // Zip code datasets
         List<String> datasets = service.getUsZip();
         List<List<String>> chunks = service.chunkBySize(datasets, Constant.SIZE_CHUNK);
-//        while (true) {
+        while (true) {
+            List<Future<String>> futures = new ArrayList<>();
             for (List<String> zipcodes : chunks) {
-                executor.submit(()->process(zipcodes));
+                Future<String> future = executor.submit(()->process(zipcodes));
+                futures.add(future);
             }
-//        }
+            for(Future<String> fut : futures){
+                try {
+                    System.out.println(fut.get());
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+            Thread.sleep(60000);
+        }
     }
 
-    static void process(List<String> zipcodes) {
+    static String process(List<String> zipcodes) {
         System.out.println("PROCESSING " + zipcodes.size() + " RECORDS!!!!!");
         List<Weather> weathers = new ArrayList<>();
         for (String zip : zipcodes) {
@@ -51,6 +63,7 @@ public class ProducerDemo {
         producer.flush();
         // flush and close producer
         producer.close();
-
+        System.out.println("PROCESSED " + zipcodes.size() + " RECORDS!!!!!");
+        return "";
     }
 }

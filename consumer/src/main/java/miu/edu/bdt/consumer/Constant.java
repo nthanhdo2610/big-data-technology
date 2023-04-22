@@ -2,7 +2,6 @@ package miu.edu.bdt.consumer;
 
 public class Constant {
 
-    public static final String HIVE_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String KAFKA_BROKERS = "quickstart.cloudera:9092";
     public static final String TOPIC_NAME = "weather_topic";
     public static final String JDBC_DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";

@@ -11,9 +11,11 @@ public class Weather {
 
     private String zipcode;
     private float temp;
+    private String updatedDate;
 
-    public Weather(String zipcode, WeatherData dto) {
+    public Weather(String zipcode, WeatherData dto, String updatedDate) {
         this.zipcode = zipcode;
         this.temp = dto.getCurrent().getTemp_f();
+        this.updatedDate = updatedDate;
     }
 }

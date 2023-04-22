@@ -89,7 +89,7 @@ public class ProducerService {
         return zips;
     }
 
-    public List<List<String>> chunkData(List<String> list, int n) {
+    public List<List<String>> chunkByFiles(List<String> list, int n) {
         List<List<String>> chunks = new ArrayList<>();
 
         int size = list.size();
@@ -98,6 +98,17 @@ public class ProducerService {
         for (int i = 0; i < size; i += chunkSize) {
             int end = Math.min(size, i + chunkSize);
             chunks.add(list.subList(i, end));
+        }
+
+        return chunks;
+    }
+
+    public List<List<String>> chunkBySize(List<String> list, int n) {
+        List<List<String>> chunks = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i += n) {
+            int end = Math.min(list.size(), i + n);
+            chunks.add(new ArrayList<>(list.subList(i, end)));
         }
 
         return chunks;
@@ -126,7 +137,7 @@ public class ProducerService {
                 throw new Exception(response.message());
             }
         } catch (Exception e) {
-            log.error("GET Weather data by zip " + zipcode + " error " + e.getMessage());
+            log.warn("GET Weather data by zip " + zipcode + " error " + e.getMessage());
         } finally {
             if (response != null) {
                 response.close();

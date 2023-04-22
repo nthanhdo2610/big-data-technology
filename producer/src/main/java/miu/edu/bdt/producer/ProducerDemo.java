@@ -8,26 +8,27 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProducerDemo {
     private static final ProducerService service = ProducerService.getInstance();
     private static final Gson gson = new Gson();
+    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public static void main(String[] args) {
         // Zip code datasets
         List<String> datasets = service.getUsZip();
-        List<List<String>> chunks = service.chunkData(datasets, Constant.NUMBER_OF_FILES_CHUNK);
+        List<List<String>> chunks = service.chunkBySize(datasets, Constant.SIZE_CHUNK);
 //        while (true) {
             for (List<String> zipcodes : chunks) {
-                process(zipcodes);
+                executor.submit(()->process(zipcodes));
             }
 //        }
     }
 
     static void process(List<String> zipcodes) {
         System.out.println("PROCESSING " + zipcodes.size() + " RECORDS!!!!!");
-        // create the producer
-        KafkaProducer<String, String> producer = service.getProducer();
         List<Weather> weathers = new ArrayList<>();
         for (String zip : zipcodes) {
             Weather weather = service.getWeatherData(zip);
@@ -35,6 +36,9 @@ public class ProducerDemo {
                 weathers.add(weather);
             }
         }
+
+        // create the producer
+        KafkaProducer<String, String> producer = service.getProducer();
         service.publishData(
                 producer,
                 new ProducerRecord<>(Constant.TOPIC_NAME,
@@ -45,7 +49,6 @@ public class ProducerDemo {
 
         // flush data - synchronous
         producer.flush();
-
         // flush and close producer
         producer.close();
 

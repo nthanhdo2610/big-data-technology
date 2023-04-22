@@ -10,11 +10,13 @@ import lombok.Setter;
 public class Weather {
 
     private String zipcode;
+    private String city;
     private float temp;
     private String updatedDate;
 
     public Weather(String zipcode, WeatherData dto, String updatedDate) {
         this.zipcode = zipcode;
+        this.city = dto.getLocation().getName();
         this.temp = dto.getCurrent().getTemp_f();
         this.updatedDate = updatedDate;
     }

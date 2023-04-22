@@ -12,6 +12,7 @@ import lombok.Setter;
 public class Weather {
 
     private String zipcode;
+    private String city;
     private float temp;
     private String updatedDate;
 

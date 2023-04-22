@@ -70,8 +70,9 @@ public class ConsumerService {
         }
         try {
             StringJoiner joiner = new StringJoiner(",");
-            records.stream().map(r -> String.format("(\"%s\",%.2f,\"%s\")",
+            records.stream().map(r -> String.format("(\"%s\",\"%s\",%.2f,\"%s\")",
                     r.getZipcode(),
+                    r.getCity(),
                     r.getTemp(),
                     r.getUpdatedDate())).forEach(joiner::add);
             String sql = String.format(Constant.INSERT_WEATHER_TABLE_SQL, Constant.TABLE_NAME, joiner);

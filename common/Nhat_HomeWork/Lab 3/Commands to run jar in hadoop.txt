@@ -1,5 +1,0 @@
-1. hadoop fs -mkdir input
-2. hadoop fs -put /home/cloudera/Desktop/Question-Lab3-NCDC-Weather.txt input
-3. hadoop fs -rm -r output
-4. hadoop jar /home/cloudera/Desktop/Lab3_AverageTemperature.jar AverageTemperature_Partitioner input output
-5. hadoop fs -get output /home/cloudera/Desktop/

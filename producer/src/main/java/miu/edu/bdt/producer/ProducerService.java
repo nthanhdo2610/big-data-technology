@@ -92,19 +92,19 @@ public class ProducerService {
         return zips;
     }
 
-    public List<List<String>> chunkByFiles(List<String> list, int n) {
-        List<List<String>> chunks = new ArrayList<>();
-
-        int size = list.size();
-        int chunkSize = (int) Math.ceil((double) size / n);
-
-        for (int i = 0; i < size; i += chunkSize) {
-            int end = Math.min(size, i + chunkSize);
-            chunks.add(list.subList(i, end));
-        }
-
-        return chunks;
-    }
+//    public List<List<String>> chunkByFiles(List<String> list, int n) {
+//        List<List<String>> chunks = new ArrayList<>();
+//
+//        int size = list.size();
+//        int chunkSize = (int) Math.ceil((double) size / n);
+//
+//        for (int i = 0; i < size; i += chunkSize) {
+//            int end = Math.min(size, i + chunkSize);
+//            chunks.add(list.subList(i, end));
+//        }
+//
+//        return chunks;
+//    }
 
     public List<List<String>> chunkBySize(List<String> list, int n) {
         List<List<String>> chunks = new ArrayList<>();

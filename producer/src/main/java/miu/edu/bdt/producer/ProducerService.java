@@ -68,14 +68,6 @@ public class ProducerService {
             String[] line;
             while ((line = reader.readNext()) != null) {
                 String code = line[0];
-//                int zip = Integer.parseInt(line[0]);
-//                if (zip < 1000) {
-//                    code = "00" + zip;
-//                } else if (zip < 10000) {
-//                    code = "0" + zip;
-//                } else {
-//                    code = line[0];
-//                }
                 zips.add(code);
             }
         } catch (IOException e) {

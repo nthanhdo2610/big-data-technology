@@ -1,14 +1,13 @@
 package miu.edu.bdt.producer;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 class ProducerDemoTest {
 

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>big-data-technology</artifactId>
+        <groupId>miu.edu</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>visualizer</artifactId>
+
+    <dependencies>
+        <!-- <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>${spark.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>${spark.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>${spark.scope}</scope>
+        </dependency> -->
+        
+        <!-- spark -->
+	<dependency>
+    	<groupId>org.apache.spark</groupId>
+    	<artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
+    	<version>2.2.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.spark</groupId>
+    	<artifactId>spark-core_2.11</artifactId>
+    	<version>2.2.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.spark</groupId>
+    	<artifactId>spark-streaming_2.11</artifactId>
+    	<version>2.2.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.spark</groupId>
+    	<artifactId>spark-sql-kafka-0-10_2.11</artifactId>
+    	<version>2.2.0</version>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.spark</groupId>
+	    <artifactId>spark-hive_2.11</artifactId>
+	    <version>2.2.0</version>
+	</dependency>
+	
+	<dependency>
+     <groupId>org.apache.hive</groupId>
+     <artifactId>hive-jdbc</artifactId>
+     <version>1.1.1</version>
+	</dependency>
+	
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <!-- <artifactId>maven-assembly-plugin</artifactId> -->
+                <configuration>
+                    <archive>
+                        <manifestFile>
+                            src/main/resources/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <!-- <executions>
+                    <execution>
+                        <id>make-assembly</id> this is used for inheritance merges
+                        <phase>package</phase> bind to the packaging phase
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions> -->
+                <executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+			                <filters>
+			                    <filter>
+			                        <artifact>*:*</artifact>
+			                        <excludes>
+			                            <exclude>META-INF/*.SF</exclude>
+			                            <exclude>META-INF/*.DSA</exclude>
+			                            <exclude>META-INF/*.RSA</exclude>
+			                        </excludes>
+			                    </filter>
+		                	</filters>
+				          	<transformers>
+				           		 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+				          	</transformers>
+				        </configuration>
+					</execution>
+				</executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>
+                            src/main/resources/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

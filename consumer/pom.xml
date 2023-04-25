@@ -19,31 +19,18 @@
             <version>1.1.1</version>
         </dependency>
 	    <!-- spark -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>${spark.scope}</scope>
+        </dependency>
 		<dependency>
 	    	<groupId>org.apache.spark</groupId>
-	    	<artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
-	    	<version>2.2.0</version>
+	    	<artifactId>spark-streaming-kafka-0-10_${scala.version}</artifactId>
+	    	<version>${spark.version}</version>
+            <scope>${spark.scope}</scope>
 	    </dependency>
-	    <dependency>
-	    	<groupId>org.apache.spark</groupId>
-	    	<artifactId>spark-core_2.11</artifactId>
-	    	<version>2.2.0</version>
-	    </dependency>
-	    <dependency>
-	    	<groupId>org.apache.spark</groupId>
-	    	<artifactId>spark-streaming_2.11</artifactId>
-	    	<version>2.2.0</version>
-	    </dependency>
-	    <dependency>
-	    	<groupId>org.apache.spark</groupId>
-	    	<artifactId>spark-sql-kafka-0-10_2.11</artifactId>
-	    	<version>2.2.0</version>
-	    </dependency>
-	    <dependency>
-	       <groupId>org.apache.spark</groupId>
-		    <artifactId>spark-hive_2.11</artifactId>
-		    <version>2.2.0</version>
-		</dependency>
     </dependencies>
     <build>
         <plugins>

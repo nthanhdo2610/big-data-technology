@@ -38,5 +38,8 @@ Group Members
      + java -jar 'consumer/target/consumer-1.0-SNAPSHOT-jar-with-dependencies.jar'
      + java -jar 'producer/target/producer-1.0-SNAPSHOT-jar-with-dependencies.jar'
      
+# Run visualizer with jar file: run jar file (without dependencies)
+	 + java -jar 'visualizer/visualizer-1.0-SNAPSHOT.jar'
+     
 #Analyze projects:
      + Please refer the FinalProject_presentation_v2.pptx

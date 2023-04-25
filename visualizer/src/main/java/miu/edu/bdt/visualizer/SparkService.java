@@ -41,8 +41,8 @@ public class SparkService {
 		sqlDF.write().saveAsTable("bdt_iowa_weather");
 		sqlDF.show();
 		
-		List<Weather> list = sqlDF.as(Encoders.bean(Weather.class)).collectAsList();		
-		return list;
+//		List<Weather> list = sqlDF.as(Encoders.bean(Weather.class)).collectAsList();		
+		return null;
 	}
 	
 	public List<AvgTemperature> getLast7DaysAvgTempByArea() {
@@ -58,8 +58,8 @@ public class SparkService {
 		sqlDF.write().saveAsTable("bdt_avg_weather");
 		sqlDF.show();
 
-		List<AvgTemperature> list = sqlDF.as(Encoders.bean(AvgTemperature.class)).collectAsList();
-		return list;
+//		List<AvgTemperature> list = sqlDF.as(Encoders.bean(AvgTemperature.class)).collectAsList();
+		return null;
 	}
 	
 	public List<AvgTemperature> getHotAreaWithTempGreaterThan83() {
@@ -75,7 +75,7 @@ public class SparkService {
 		sqlDF.write().saveAsTable("bdt_hot_weather");
 		sqlDF.show();
 		
-		List<AvgTemperature> list = sqlDF.as(Encoders.bean(AvgTemperature.class)).collectAsList();
-		return list;
+//		List<AvgTemperature> list = sqlDF.as(Encoders.bean(AvgTemperature.class)).collectAsList();
+		return null;
 	}
 }

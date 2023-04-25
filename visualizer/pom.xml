@@ -9,29 +9,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>consumer</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>visualizer</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-jdbc</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-	    <!-- spark -->
-        <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-streaming_${scala.version}</artifactId>
+            <artifactId>spark-core_${scala.version}</artifactId>
             <version>${spark.version}</version>
             <scope>${spark.scope}</scope>
         </dependency>
-		<dependency>
-	    	<groupId>org.apache.spark</groupId>
-	    	<artifactId>spark-streaming-kafka-0-10_${scala.version}</artifactId>
-	    	<version>${spark.version}</version>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.version}</artifactId>
+            <version>${spark.version}</version>
             <scope>${spark.scope}</scope>
-	    </dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+            <scope>${spark.scope}</scope>
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

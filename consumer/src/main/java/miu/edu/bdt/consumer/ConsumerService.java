@@ -27,12 +27,6 @@ public class ConsumerService {
 
     private ConsumerService() {
 
-        // jdbc:hive2://<hiveserver>:10000/;ssl=false
-        String config = "jdbc:hive2://" +
-                Constant.HOST_HIVE +
-                ":" +
-                Constant.PORT_HIVE +
-                "/;ssl=false";
         try {
             // Set JDBC Hive Driver
             Class.forName(Constant.JDBC_DRIVER_NAME);
@@ -40,7 +34,7 @@ public class ConsumerService {
             // Connect to Hive
             // Choose a user that has the rights to write into /user/hive/warehouse/
             // (e.g. hdfs)
-            connection = DriverManager.getConnection(config, "hdfs", "");
+            connection = DriverManager.getConnection(Constant.JDBC_HIVE_CONNECTION, "hdfs", "");
         } catch (Exception e) {
             logger.error("Cannot create Hive connection. " + e);
             e.printStackTrace();
@@ -49,12 +43,12 @@ public class ConsumerService {
         try {
             statement = connection.createStatement();
 
-            String drop = String.format(Constant.DROP_TABLE_SQL, Constant.TABLE_NAME);
-            System.out.println("DROP_TABLE_SQL: " + drop);
+//            String drop = String.format(Constant.DROP_TABLE_SQL, Constant.TABLE_NAME);
+//            logger.info("DROP_TABLE_SQL: " + drop);
 //            statement.execute(drop);
 
             String sql = String.format(Constant.CREATE_WEATHER_TABLE_SQL, Constant.TABLE_NAME);
-            System.out.println("CREATE_WEATHER_TABLE_SQL: " + sql);
+            logger.info("CREATE_WEATHER_TABLE_SQL: " + sql);
             statement.execute(sql);
 
         } catch (SQLException e) {
@@ -76,7 +70,7 @@ public class ConsumerService {
                     r.getTemp(),
                     r.getUpdatedDate())).forEach(joiner::add);
             String sql = String.format(Constant.INSERT_WEATHER_TABLE_SQL, Constant.TABLE_NAME, joiner);
-            System.out.println("INSERT_WEATHER_TABLE_SQL: " + sql);
+            logger.info("INSERT_WEATHER_TABLE_SQL: " + sql);
             statement.execute(sql);
         } catch (SQLException e) {
             logger.error("Cannot create Hive connection. " + e);

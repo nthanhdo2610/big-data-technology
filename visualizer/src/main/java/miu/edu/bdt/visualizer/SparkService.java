@@ -42,7 +42,6 @@ public class SparkService {
                 .config(sparkConf)
                 .enableHiveSupport()
                 .getOrCreate()) {
-            session.sparkContext.hadoopConfiguration.set("fs.s3.impl", "org.apache.hadoop.fs.s3native.NativeS3FileSystem")
             session.sql(String.format(Constant.DROP_TABLE_SQL, Constant.IOWA_TABLE_NAME));
             Dataset<Row> iowa = session.sql(String.format(Constant.SELECT_WEATHER_IOWA_SQL, Constant.TABLE_NAME));
             iowa.write().saveAsTable(Constant.IOWA_TABLE_NAME);

@@ -1,3 +1,0 @@
-CREATE EXTERNAL TABLE if not exists employees (name STRING, job_title STRING, department STRING, full_or_part_time STRING, salary_or_hour STRING, typical_hours STRING, annual_salary STRING, hourly_rate STRING) ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde' STORED AS TEXTFILE LOCATION '/hive/input/ChicagoEmployeesDataset.csv';
-
-CREATE VIEW if not exists employees_vw AS SELECT name, job_title, department, CAST(full_or_part_time as char(1)), CAST(salary_or_hour as varchar(10)), CAST(typical_hours as smallint), CAST(annual_salary as double), CAST(hourly_rate as float) FROM employees WHERE name != 'Name';
